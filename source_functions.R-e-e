@@ -23,17 +23,24 @@ setup <- function(j_root_name = "j_root", h_root_name = "h_root", user_name = "u
 }
 
 
-source_functions <- function(get_cod_data = FALSE, get_covariate_estimate = FALSE) {
-  # source path roots
-  setup()
+source_functions <- function(get_cod_data = FALSE, get_covariate_estimate = FALSE, get_results = TRUE) {
   
-  base <- paste0(j_root, "WORK/10_functions/etc")
-  #print(base)
+  # set up OS flexibility
+  setup()
+  base <- paste0(j_root, "WORK/10_functions/etc/")
     
-  args <- as.list(args(source_functions))
-  for (arg in args) {
-    print(arg)
-  }
+  # translate the function arguments into a dataframe for easier subsetting
+  args_list <- as.list(args(source_functions))                   # translate into a list
+  args_char <- unlist((args_list[1:length(args_list) - 1]))      # drop the last item (NULL) 
+  args_df <- data.frame(function_name=names(args_char), bool=args_char, row.names=NULL)
+  
+  true_args <- args_df[args_df$bool == TRUE, ]
+  
+  # source here, not print
+  print(mapply(paste0, base, true_args$function_name))
+  
 }
 
 source_functions()
+
+
