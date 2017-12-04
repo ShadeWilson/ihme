@@ -23,24 +23,43 @@ setup <- function(j_root_name = "j_root", h_root_name = "h_root", user_name = "u
 }
 
 
-source_functions <- function(get_cod_data = FALSE, get_covariate_estimate = FALSE, get_results = TRUE) {
+source_functions <- function(get_cod_data = FALSE, get_covariate_estimate = TRUE, 
+                             get_results = FALSE, all = FALSE) {
   
   # set up OS flexibility
   setup()
   base <- paste0(j_root, "WORK/10_functions/etc/")
-    
+  
+  args_list <- as.list(sys.call())
+  
+  # check if there were arguments given. If not, stop.
+  if (length(args_list) == 1) {
+    stop("Must set at least one function to source as true. If you want to source all functions, set all = TRUE.")
+  }
+  
   # translate the function arguments into a dataframe for easier subsetting
-  args_list <- as.list(args(source_functions))                   # translate into a list
-  args_char <- unlist((args_list[1:length(args_list) - 1]))      # drop the last item (NULL) 
+  # drop the first item (list name)
+  args_char <- unlist(args_list[2:length(args_list)])       
   args_df <- data.frame(function_name=names(args_char), bool=args_char, row.names=NULL)
   
-  true_args <- args_df[args_df$bool == TRUE, ]
+  # grab just the trues
+  if (is.logical(args_df$bool)) {
+    true_args <- args_df[args_df$bool, ]
+  } else {
+    stop("Invalid argument type. Must be logical (either TRUE or FALSE).")
+  }
+  
+  if (nrow(true_args) == 0) {
+    stop("At least one argument must be true.")
+  }
   
   # source here, not print
-  print(mapply(paste0, base, true_args$function_name))
+  print(mapply(paste0, base, true_args$function_name, ".R"))
   
 }
 
+source_functions(get_cod_data = TRUE, get_results = TRUE)
+source_functions(get_cod_data = TRUE, get_results = FALSE)
 source_functions()
-
-
+source_functions(get_cod_data = "one")
+source_functions(get_cod_data = FALSE)
