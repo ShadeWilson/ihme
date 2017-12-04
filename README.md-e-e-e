@@ -1,7 +1,7 @@
 # Functions for Simplifying Life at IHME 
 Functions to improve efficiency, minimize copying/pasting common code, and abstract away unimportant details like exact filepaths.
 
-Enroute to be made into a simple R package for internal use at IHME. Any feedback you may have would be great! Submit an issue on this page or contact me at shadew@uw.edu.
+Enroute to be made into a simple R package for internal use at IHME. Any feedback you may have would be great! [Submit an issue here](https://github.com/ShadeWilson/ihme/issues) or contact me at shadew@uw.edu.
 
 ## Installation
 
