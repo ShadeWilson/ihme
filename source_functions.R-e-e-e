@@ -31,11 +31,20 @@ source_functions <- function(get_cod_data = FALSE, get_covariate_estimate = TRUE
   setup()
   base <- paste0(j_root, "WORK/10_functions/etc/")
   
+  # source all functions if option all is true
+  if (all == TRUE) {
+    default_args <- as.list(args(source_functions))
+    default_args <- default_args[1:(length(default_args) - 2)]
+    functions <- names(default_args)
+    print(mapply(paste0, base, functions, ".R"))
+    return("All shared functions sourced.")
+  }
+  
   args_list <- as.list(sys.call())
   
   # check if there were arguments given. If not, stop.
   if (length(args_list) == 1) {
-    stop("Must set at least one function to source as true. If you want to source all functions, set all = TRUE.")
+    stop("At least one shared function must be true. To source all functions, set all = TRUE.")
   }
   
   # translate the function arguments into a dataframe for easier subsetting
@@ -66,3 +75,4 @@ source_functions(get_cod_data = TRUE, get_results = FALSE)
 source_functions()
 source_functions(get_cod_data = "one")
 source_functions(get_cod_data = FALSE)
+source_functions(all = TRUE)
