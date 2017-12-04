@@ -1,4 +1,5 @@
-#' Automated set up of j and h roots plus username based on the operating system.
+#' Automated environment setup based on the operating system.
+#' @description Automated environment setup based on the operating system. Gives default variable names of j_root, h_root, and user, but any argument can be passed a different name if desired.
 #' @param j_root_name variable name for J drive root as a character string.
 #' @param h_root_name variable name for H drive root as a character string.
 #' @param user_name variable name for username as a character string.
@@ -9,7 +10,8 @@
 #' setup(j_root_name = "j", h_root_name = "h")
 
 
-setup <- function(j_root_name = "j_root", h_root_name = "h_root", user_name = "user") {
+setup <- function(j_root_name = "j_root", h_root_name = "h_root", 
+                  user_name = "user") {
   
   user <- Sys.info()[["user"]]
   

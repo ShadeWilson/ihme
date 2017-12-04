@@ -2,7 +2,7 @@
 % Please edit documentation in R/setup.R
 \name{setup}
 \alias{setup}
-\title{Automated set up of j and h roots plus username based on the operating system.}
+\title{Automated environment setup based on the operating system.}
 \usage{
 setup(j_root_name = "j_root", h_root_name = "h_root", user_name = "user")
 }
@@ -14,7 +14,7 @@ setup(j_root_name = "j_root", h_root_name = "h_root", user_name = "user")
 \item{user_name}{variable name for username as a character string.}
 }
 \description{
-Automated set up of j and h roots plus username based on the operating system.
+Automated environment setup based on the operating system. Gives default variable names of j_root, h_root, and user, but any argument can be passed a different name if desired.
 }
 \examples{
 setup() # uses default root names (j_root, h_root), and username default (user)
