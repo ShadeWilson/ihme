@@ -13,6 +13,10 @@ install_github("ShadeWilson/ihme")
 
 ## Usage
 
+```r
+library(ihme)
+```
+
 **Functions currently available:** `setup()`
 
 **Functions under development:** `source_functions()`
