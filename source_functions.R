@@ -8,7 +8,8 @@ setup <- function(j_root_name = "j_root", h_root_name = "h_root", user_name = "u
   
   user <- Sys.info()[["user"]]
   
-  if (Sys.info()["sysname"] == "Linux") {
+  # Linux or mac
+  if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
     j_root <- "/home/j/"
     h_root <- "~/"
   } else { 
@@ -49,6 +50,8 @@ source_functions <- function(get_cod_data = FALSE, get_covariate_estimate = TRUE
     stop("Invalid argument type. Must be logical (either TRUE or FALSE).")
   }
   
+  # stop if none of the arguments passed in are false
+  # no one should ever do this, but just in case
   if (nrow(true_args) == 0) {
     stop("At least one argument must be true.")
   }

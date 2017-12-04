@@ -8,7 +8,8 @@ setup <- function(j_root_name = "j_root", h_root_name = "h_root", user_name = "u
   
   user <- Sys.info()[["user"]]
   
-  if (Sys.info()["sysname"] == "Linux") {
+  # Linux or mac
+  if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
     j_root <- "/home/j/"
     h_root <- "~/"
   } else { 
