@@ -25,28 +25,50 @@ try_source <- function(base, func, folder) {
 }
 
 
-source_functions <- function(get_best_model_versions = FALSE, get_cause_metadata = FALSE, get_covariate_estimates = TRUE,
-                             get_demographics = FALSE, get_epi_data = FALSE, get_ids = FALSE,
-                             get_location_metadata = FALSE, get_rei_metadata = FALSE, get_restrictions = FALSE,
-                             upload_epi_data = FALSE, validate_input_sheet = FALSE, get_cod_data = FALSE,
-                             get_envelope = FALSE, get_envelope_with_shock = FALSE, get_life_table = FALSE,
-                             get_life_table_with_shock = FALSE, get_model_results = FALSE, get_population = FALSE,
-                             get_draws = FALSE, get_outputs = FALSE, interpolate = FALSE, save_results_cod = FALSE,
-                             save_results_epi = FALSE, get_pct_change = FALSE, split_cod_model = FALSE,
-                             split_epi_model = FALSE, all = FALSE) {
+source_functions <- function(create_connection_string = FALSE,
+                             get_best_model_versions = FALSE,
+                             get_cause_metadata = FALSE,
+                             get_covariate_estimates = TRUE,
+                             get_demographics = FALSE,
+                             get_epi_data = FALSE,
+                             get_ids = FALSE,
+                             get_location_metadata = FALSE,
+                             get_rei_metadata = FALSE,
+                             get_restrictions = FALSE,
+                             model_custom = FALSE,
+                             upload_epi_data = FALSE,
+                             validate_input_sheet = FALSE,
+                             get_cod_data = FALSE,
+                             get_envelope = FALSE,
+                             get_envelope_with_shock = FALSE,
+                             get_life_table = FALSE,
+                             get_life_table_with_shock = FALSE,
+                             get_model_results = FALSE,
+                             get_population = FALSE,
+                             get_draws = FALSE,
+                             get_outputs = FALSE,
+                             interpolate = FALSE,
+                             save_results_cod = FALSE,
+                             save_results_epi = FALSE,
+                             get_pct_change = FALSE,
+                             make_aggregates = FALSE,
+                             save_results_covariates = FALSE, # name maybe incorrect
+                             save_results_risk = FALSE,
+                             split_cod_model = FALSE,
+                             split_epi_model = FALSE,
+                             all = FALSE, folder = "current") {
 
   # set up OS flexibility
   setup()
-  folder <- "current"
   base <- paste0(j_root, "REDACTED/", folder, "/r/")
 
   # source all functions if option all is true
   if (all == TRUE) {
     default_args <- as.list(args(source_functions))
-    default_args <- default_args[1:(length(default_args) - 2)]
+    default_args <- default_args[1:(length(default_args) - 3)]
     functions <- names(default_args)
     #print(mapply(paste0, base, functions, ".R"))
-    filepaths <- mapply(paste0, base, functions, ".R")
+    #filepaths <- mapply(paste0, base, functions, ".R")
     mapply(try_source, base = base, func = unname(functions), folder = folder)
     message("All shared functions sourced.")
     return()
@@ -78,9 +100,8 @@ source_functions <- function(get_best_model_versions = FALSE, get_cause_metadata
   }
 
   # source here, not print
-  filepaths <- mapply(paste0, base, true_args$function_name, ".R")
-  #mapply(try_source, base = base, func = unname(filepaths), folder = folder)
-  mapply(try_source, base = base, func = true_args$function_name, folder = folder)
+  #filepaths <- mapply(paste0, base, true_args$function_name, ".R")
+  invisible(mapply(try_source, base = base, func = true_args$function_name, folder = folder))
 }
 
 source_functions(get_cod_data = TRUE)
