@@ -1,7 +1,12 @@
-# Shade Wilson
-# 11/16/2017
-# Automated set up of j and h roots plus username
-# can specify desired variable names, deults given
+#' Automated set up of j and h roots plus username based on the operating system.
+#' @param j_root_name variable name for J drive root as a character string.
+#' @param h_root_name variable name for H drive root as a character string.
+#' @param user_name variable name for username as a character string.
+#' @keywords setup
+#' @export
+#' @examples
+#' setup() # uses default root names (j_root, h_root), and username default (user)
+#' setup(j_root_name = "j", h_root_name = "h")
 
 
 setup <- function(j_root_name = "j_root", h_root_name = "h_root", user_name = "user") {
