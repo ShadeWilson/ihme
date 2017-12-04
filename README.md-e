@@ -3,5 +3,10 @@ Functions to improve efficiency, minimize copying/pasting common code, and abstr
 
 Enroute to be made into a simple R package for internal use at IHME.
 
+## Installation
 
-
+```r
+install.packages("devtools")
+library(devtools)
+install_github("ShadeWilson/sourceables/ihme")
+```
