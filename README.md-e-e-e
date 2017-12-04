@@ -8,5 +8,5 @@ Enroute to be made into a simple R package for internal use at IHME.
 ```r
 install.packages("devtools")
 library(devtools)
-install_github("ShadeWilson/sourceables/ihme")
+install_github("ShadeWilson/ihme")
 ```
