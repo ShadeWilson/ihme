@@ -141,13 +141,6 @@ source_functions <- function(create_connection_string = FALSE,   # WAVE 1
   invisible(mapply(try_source, base = base, func = true_args$function_name, folder = folder))
 }
 
-source_functions(get_cod_data = TRUE)
-source_functions(get_cause_metadata = TRUE, save_results_cod = TRUE)
-source_functions()
-source_functions(get_cod_data = "one")
-source_functions(get_cod_data = FALSE)
-source_functions(split_cod_model = TRUE)
-source_functions(all = TRUE)
 
 
 
