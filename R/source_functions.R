@@ -74,7 +74,7 @@ source_functions <- function(create_connection_string = FALSE,   # WAVE 1
                              save_results_risk = FALSE,
                              split_cod_model = FALSE,
                              split_epi_model = FALSE,
-                             all = FALSE, folder = "/current/r/") {
+                             all = FALSE, folder = "current/r/") {
 
   # try catch for sourcing: catches functions not yet imported into the current (or any) folder
   try_source <- function(base, func, folder) {
@@ -97,8 +97,7 @@ source_functions <- function(create_connection_string = FALSE,   # WAVE 1
 
   # set up OS flexibility
   setup()
-  inner_path_url <- "https://gist.githubusercontent.com/ShadeWilson/73d1562d463cff52ce760b3f63ebe154/raw/231bb412d86a44f2ff86d60f09219a30417cda4b/test_filepath"
-  inner_path <- eval( expr = parse(text = RCurl::getURL(inner_path_url, ssl.verifypeer=FALSE)))
+  inner_path <- readChar(paste0(h_root, "gists/inner_path"), file.info(paste0(h_root, "gists/inner_path"))$size)
   base <- paste0(j_root, inner_path, folder)
 
   # source all functions if option all is true
