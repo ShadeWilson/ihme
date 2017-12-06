@@ -8,6 +8,8 @@ Description: Functions to improve efficiency, minimize copying/pasting common co
     abstract away unimportant details like exact filepaths to make your life easier at the
     Institute for Health Metrics and Evaluation (IHME). Currently under development.
 Depends: R (>= 3.4.0)
+Imports:
+    RCurl
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
