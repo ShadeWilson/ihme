@@ -7,8 +7,7 @@ A simple R package for internal use at IHME. Any feedback you may have would be 
 
 ```r
 install.packages("devtools")
-library(devtools)
-install_github("ShadeWilson/ihme")
+devtools::install_github("ShadeWilson/ihme")
 ```
 
 ## Usage
