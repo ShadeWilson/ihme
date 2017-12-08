@@ -128,15 +128,17 @@ source_functions <- function(create_connection_string = FALSE,   # WAVE 1
 
   # translate the function arguments into a dataframe for easier subsetting
   # drop the first item (list name)
-  args_char <- unlist(args_list[2:length(args_list)])
+  args_char <- do.call(c, unlist(args_list[2:length(args_list)], recursive = FALSE))
+
   args_df <- data.frame(function_name=names(args_char), bool=args_char, row.names=NULL)
 
-  # grab just the trues
-  if (is.logical(args_df$bool)) {
-    true_args <- args_df[args_df$bool, ]
-  } else {
+  # check if logical values are passed in
+  if (!is.logical(args_df$bool)) {
     stop("Invalid argument type. Must be logical (either TRUE or FALSE).")
   }
+
+  # grab just the trues
+  true_args <- args_df[args_df$bool, ]
 
   # stop if none of the arguments passed in are false
   # no one should ever do this, but just in case
@@ -149,7 +151,8 @@ source_functions <- function(create_connection_string = FALSE,   # WAVE 1
   invisible(mapply(try_source, base = base, func = true_args$function_name, folder = folder))
 }
 
-source_functions(get_location_metadata = TRUE)
+#source_functions(get_location_metadata = TRUE, get_ids = T, get_cause_metadata = T)
+
 
 
 
