@@ -1,10 +1,22 @@
-# do the git cloning here
-# git clone git@github.com:whatever folder-name
+# Shade Wilson
+# 12/7/2017
 
-# wouldnt be have to grep for repo name
+#' Git clone command in R
+#' @description Perform a git clone in R. Default clones the repo to your H drive
+#' @param repo_url The url of the repo you want to clone
+#' @param repo_name The name you want to call the repo when you clone it. If not specified, use the original name of the repo
+#' @keywords git clone
+#' @export
+#' @examples
+#' git_clone("https://github.com/ShadeWilson/ihme")
+#' git_clone("https://github.com/tidyverse/tidyverse", repo_name = "my_favorite_repo")
+
+# give ability to change where cloned, rn default to h drive
 
 git_clone <- function(repo_url, repo_name = NULL) {
+  setup()
 
+  # automatically grab repo name if not supplied one
   if (is.null(repo_name)) {
     intermediate_name <- stringr::str_extract(repo_url, "[^/]*.git$")
     repo_name <- stringr::str_extract(intermediate_name, "^[^.]*")
