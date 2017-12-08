@@ -22,12 +22,6 @@ git_clone <- function(repo_url, repo_name = NULL) {
     repo_name <- stringr::str_extract(intermediate_name, "^[^.]*")
   }
 
-  # check if the repo has already been cloned
-  # if (repo_name %in% list.files(paste0(h_root))) {
-  #   inner_path <- paste0(h_root, repo_name, "/inner_path")
-  #   return(readChar(inner_path, file.info(inner_path)$size))
-  # }
-
   # if not, check the OS. Matters because linux/mac commands WONT work on windows
   if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
     system(paste0("git clone", repo_url, " ", h_root, repo_name))
@@ -41,6 +35,5 @@ git_clone <- function(repo_url, repo_name = NULL) {
   }
 }
 
-#git_clone("https://shadew@stash.ihme.washington.edu/scm/~shadew/ihme_r_pkg_files.git")
 
 
