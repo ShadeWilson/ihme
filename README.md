@@ -1,7 +1,7 @@
 # Functions for Simplifying Life at IHME 
 Functions to improve efficiency, minimize copying/pasting common code, and abstract away unimportant details like exact filepaths.
 
-A simple R package for internal use at IHME. Any feedback you may have would be great! [Submit any suggestions or issues here](https://github.com/ShadeWilson/ihme/issues) or contact me at shadew@uw.edu.
+A simple R package for internal use at IHME. Any feedback about the current functions or suggestions for other useful functions you may have would be great! [Submit any ideas or issues here](https://github.com/ShadeWilson/ihme/issues) or contact me at shadew@uw.edu.
 
 ## Installation
 
@@ -19,7 +19,7 @@ library(ihme)
 ihme::setup() # (or any other function in the package)
 ```
 
-**Functions currently available:** `setup()`, `source_functions()`
+**Functions currently available:** `setup()`, `source_functions()`, `git_clone()`
 
 **Functions under development:** `qsub()` (and related functions)
 
@@ -40,7 +40,14 @@ source_functions(all = TRUE)                               # source all availabl
 
 `qsub()`: Submit a job on the cluster through R with a simplyfied interface. Adapting code written by Grant Nguyen.
 
+`git_clone()`: Perform a git clone in R. Can choose a new name for the cloned repo or keep the original
 
+```r
+git_clone("https://github.com/ShadeWilson/ihme")
+git_clone("https://github.com/tidyverse/tidyverse", repo_name = "my_favorite_repo")
+```
 
+## Updates
+**0.0.2.9000:** Add function `git_clone()`. Replace file path mentions within code with calls to secure repos. Update `source_functions()`.
 
 
