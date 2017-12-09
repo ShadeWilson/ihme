@@ -36,7 +36,6 @@
 #' @param split_epi_model useful if you have a one model (e.g. prevalence of dementia, p0) that you want to split into a number of sub-models (e.g. mild, moderate, and severe dementia; p1, p2, and p3 respectively).
 #' @param all set to TRUE if you want to source all available shared functions in the selected folder (default: current/r)
 #' @param folder the folder where the shared functions are checked for, defaults to current/r. Change only if you know which older version you want to source
-#' @keywords source shared functions
 #' @export
 #' @examples
 #' source_functions(get_cod_data = TRUE)
