@@ -112,8 +112,6 @@ source_functions <- function(create_connection_string = FALSE,   # WAVE 1
     default_args <- as.list(args(source_functions))
     default_args <- default_args[1:(length(default_args) - 3)]
     functions <- names(default_args)
-    #print(mapply(paste0, base, functions, ".R"))
-    #filepaths <- mapply(paste0, base, functions, ".R")
     mapply(try_source, base = base, func = unname(functions), folder = folder)
     message("All shared functions sourced.")
     return()
@@ -127,10 +125,16 @@ source_functions <- function(create_connection_string = FALSE,   # WAVE 1
   }
 
   # translate the function arguments into a dataframe for easier subsetting
-  # drop the first item (list name)
-  args_char <- do.call(c, unlist(args_list[2:length(args_list)], recursive = FALSE))
+  # drop the first item (list name) and flatten list but keep arg names
+  # this can probably be improved
+  args_char <- vector("character", length = length(args_list) - 1)
+  for (i in 2:length(args_list)) {
+    args_char[i - 1] <- as.character(args_list[[i]])
+    names(args_char[i - 1]) <- names(args_list)[i]
+  }
+  names(args_char) <- names(args_list)[2:length(args_list)]
 
-  args_df <- data.frame(function_name=names(args_char), bool=args_char, row.names=NULL)
+  args_df <- data.frame(function_name=names(args_char), bool=as.logical(args_char), row.names=NULL)
 
   # check if logical values are passed in
   if (!is.logical(args_df$bool)) {
@@ -151,9 +155,10 @@ source_functions <- function(create_connection_string = FALSE,   # WAVE 1
   invisible(mapply(try_source, base = base, func = true_args$function_name, folder = folder))
 }
 
-#source_functions(get_location_metadata = TRUE, get_ids = T, get_cause_metadata = T)
-
-
+source_functions(get_location_metadata = TRUE, get_ids = T, get_cause_metadata = T)
+source_functions(get_location_metadata = T)
+source_functions(get_location_metadata = TRUE, get_ids = TRUE)
+source_functions(get_location_metadata = TRUE)
 
 
 
