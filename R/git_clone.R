@@ -5,7 +5,6 @@
 #' @description Perform a git clone in R. Default clones the repo to your H drive
 #' @param repo_url The url of the repo you want to clone
 #' @param repo_name The name you want to call the repo when you clone it. If not specified, use the original name of the repo
-#' @keywords git clone
 #' @export
 #' @examples
 #' git_clone("https://github.com/ShadeWilson/ihme")
