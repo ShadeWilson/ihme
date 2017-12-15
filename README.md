@@ -8,15 +8,24 @@ A simple R package for internal use at IHME. Any feedback about the current func
 ```r
 install.packages("devtools")
 devtools::install_github("ShadeWilson/ihme")
+
+# to download the package for use on the cluster 
+# change the library argument to wherever you want it to be saved
+# Here I save to H:/packages
+devtools::install_github("ShadeWilson/ihme", args = c('--library="H:/packages/"')
 ```
 
 ## Usage
 
 ```r
+# locally
 library(ihme)
 
 # or
 ihme::setup() # (or any other function in the package)
+
+# on the cluster
+library("ihme", lib.loc = "~/packages") # lib.loc is wherever you have the package saved
 ```
 
 **Functions currently available:** `setup()`, `source_functions()`, `git_clone()`
@@ -48,6 +57,9 @@ git_clone("https://github.com/tidyverse/tidyverse", repo_name = "my_favorite_rep
 ```
 
 ## Updates
+
+**0.1.0.0**: Update version number to follow conventions. Fix bug in `source_functions()`.
+
 **0.0.2.9000:** Add function `git_clone()`. Replace file path mentions within code with calls to secure repos. Update `source_functions()`.
 
 
