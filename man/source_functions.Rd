@@ -95,6 +95,3 @@ source_functions(get_cod_data = TRUE)
 source_functions(get_cause_metadata = TRUE, save_results_cod = TRUE)
 source_functions(all = TRUE)
 }
-\keyword{functions}
-\keyword{shared}
-\keyword{source}

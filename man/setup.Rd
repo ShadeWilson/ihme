@@ -13,6 +13,9 @@ setup(j_root_name = "j_root", h_root_name = "h_root", user_name = "user")
 
 \item{user_name}{variable name for username as a character string.}
 }
+\value{
+Root names for H/J drives and username based on OS as global variables.
+}
 \description{
 Automated environment setup based on the operating system. Gives default variable names of j_root, h_root, and user, but any argument can be passed a different name if desired.
 }
@@ -20,4 +23,3 @@ Automated environment setup based on the operating system. Gives default variabl
 setup() # uses default root names (j_root, h_root), and username default (user)
 setup(j_root_name = "j", h_root_name = "h")
 }
-\keyword{setup}

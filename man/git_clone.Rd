@@ -18,5 +18,3 @@ Perform a git clone in R. Default clones the repo to your H drive
 git_clone("https://github.com/ShadeWilson/ihme")
 git_clone("https://github.com/tidyverse/tidyverse", repo_name = "my_favorite_repo")
 }
-\keyword{clone}
-\keyword{git}

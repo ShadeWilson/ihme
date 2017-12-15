@@ -1,6 +1,6 @@
 Package: ihme
 Title: Functions for Improving Life at IHME
-Version: 0.0.2.9000
+Version: 0.1.0.0
 Authors@R: person("Shade", "Wilson", email = "shadew@uw.edu", role = c("aut", "cre"))
 URL: https://github.com/ShadeWilson/sourceables
 BugReports: https://github.com/ShadeWilson/sourceables/issues
