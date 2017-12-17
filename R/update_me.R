@@ -7,7 +7,8 @@
 
 library(magrittr)
 
-
+# function to update package ihme
+# needs work
 update_me_at <- function(folder) {
   message(paste0("Updating package \"ihme\" at ", folder))
   args <- paste0('--library=\"', folder, "\"")
@@ -32,6 +33,8 @@ available[available$Package %in% packages, ] %>% View()
 
 utils::packageDescription('ihme')
 
+
+# Get the most recent package version available on the CRAN
 package_version_cran = function(package, cran_url="http://cran.r-project.org/web/packages/") {
 
   # Create URL
@@ -55,7 +58,30 @@ package_version_cran = function(package, cran_url="http://cran.r-project.org/web
 
 package_version_cran("ggplot2")
 
+# check package version of something hosted on github (ex: this package)
+# TODO add better error handling
+package_version_github <- function(repo) {
+  raw_url <- paste0("https://raw.githubusercontent.com/", repo, "/master/DESCRIPTION")
 
+  suppressWarnings(conn <- try(url(raw_url), silent = TRUE))
+
+  # If connection, try to parse values, otherwise return NULL
+  if (all(class(conn) != "try-error")) {
+    suppressWarnings(description <- try(readLines(conn)))
+    close(conn)
+  } else {
+    return(NULL)
+  }
+
+  version_line <- grep("Version", description, value = TRUE)
+  version <- gsub("^Version: ", "", version_line)
+  return(version)
+}
+
+package_version_github(repo = "ShadeWilson/ihme")
+
+
+# check if locally downloaded package for use on cluster is up to date with the CRAN version
 check_package <- function(package, folder){
   message(paste0(package, ":"))
 
@@ -67,7 +93,7 @@ check_package <- function(package, folder){
 
   # Verify we have package information
   if(!is.null(cran_version) && length(cran_version) != 0L){
-    latest_version = utils::compareVersion(cran_version, local_package$Version)
+    latest_version <- utils::compareVersion(cran_version, local_package$Version)
 
     status <- if(latest_version == 0){
       'CURRENT'
@@ -78,8 +104,12 @@ check_package <- function(package, folder){
     }
 
   }else{ # Gracefully fail.
-    status <- "ERROR IN OBTAINING REMOTE VERSION INFO"
-    latest_version <- 0
+    if (package == "ihme") {
+
+    } else {
+      status <- "ERROR IN OBTAINING REMOTE VERSION INFO"
+      latest_version <- 0
+    }
   }
 
   message(paste0('Version: ', local_package$Version, ' (', status,') of ', package, ' built on ', local_package$Date))
@@ -95,10 +125,16 @@ check_package(package = "ggplot2", folder = folder)
 
 # wrapper for check_package, allows easy way to check multiple packages in a single folder
 check_package_all <- function(packages, folder) {
+  stopifnot(is.character(packages))
+
   invisible(lapply(packages, check_package, folder = folder))
 }
 
-invisible(lapply(packages, check_package, folder = folder))
+check_package_all(packages, folder)
+
+
+
+
 
 
 
