@@ -78,12 +78,12 @@ package_version_github <- function(repo) {
   return(version)
 }
 
-package_version_github(repo = "ShadeWilson/ihme")
+package_version_github("ShadeWilson/ihme")
 
 
 # check if locally downloaded package for use on cluster is up to date with the CRAN version
 # github option is for if the package is hosted on github rather than the CRAN (or you want the dev version)
-check_package <- function(package, folder, github_repo = NA){
+check_package <- function(package, folder, github_repo = NA, concise = FALSE){
   message(paste0(package, ":"))
 
   # Obtain the installed package information
@@ -114,6 +114,11 @@ check_package <- function(package, folder, github_repo = NA){
 
   }
 
+  if (concise) {
+
+    return(message(status))
+  }
+
   message(paste0('Version: ', local_package$Version, ' (', status,') of ', package, ' built on ', local_package$Date))
 
   if(latest_version == 1){
@@ -122,7 +127,7 @@ check_package <- function(package, folder, github_repo = NA){
 }
 
 
-check_package(package = "ggplot2", folder = folder)
+check_package(package = "ggplot2", folder = folder, concise = TRUE)
 check_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
 
 
@@ -133,9 +138,11 @@ check_package_all <- function(packages, folder, github_repo = NA) {
   invisible(mapply(check_package, package = packages, folder = folder, github_repo = github_repo))
 }
 
-github <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
-check_package_all(packages, folder, github_repo = "ShadeWilson/ihme")
-check_package_all(packages, folder, github_repo = github)
+# TODO: make helper function to tell which are hosted on github?
+
+github_repos <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
+check_package_all(packages, folder)
+check_package_all(packages, folder, github_repo = github_repos)
 
 
 
