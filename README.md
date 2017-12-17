@@ -30,7 +30,7 @@ library("ihme", lib.loc = "~/packages") # lib.loc is wherever you have the packa
 
 **Functions currently available:** `setup()`, `source_functions()`, `git_clone()`
 
-**Functions under development:** `qsub()` (and related functions)
+**Functions under development:** `qsub()` (and related functions), functions to facilitate checking and updating packages for use on the cluster
 
 `setup()`: Automated environment setup based on the operating system. Gives default variable names of j_root, h_root, and user, but any argument can be passed a different name if desired.
 
@@ -55,6 +55,30 @@ source_functions(all = TRUE)                               # source all availabl
 git_clone("https://github.com/ShadeWilson/ihme")
 git_clone("https://github.com/tidyverse/tidyverse", repo_name = "my_favorite_repo")
 ```
+
+`package_version_cran()`, `package_version_github()`: Retrieve the most recent package version on the CRAN/Github. Helper methods for `check_package()`, `update_package()`, and family members.
+
+```r
+package_version_cran(package = "ggplot2")
+
+package_version_github(repo = "ShadeWilson/ihme")
+```
+
+`check_package()`, `check_package_all()`: Check if a locally downloaded package for use on the cluster is up to date with the lastest version available. The github_repo option is for packages hosted on Github rather than the CRAN (or you want the developer version instead). `check_package_all()` is a wrapper for `check_package()` that allows you to check the version status of multiple packages at a time.
+
+```r
+check_package(package = "ggplot2", folder = folder)
+check_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
+
+# can also list packages in a folder with list.files()
+packages <- c("data.table", "devtools", "ggplot2" , "ihme", "lme4", "openxlsx", "tibble" , "tidyr")
+check_package_all(packages, folder, github_repo = "ShadeWilson/ihme")
+
+github_repos <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
+check_package_all(packages, folder, github_repo = github_repos)
+```
+
+
 
 ## Updates
 
