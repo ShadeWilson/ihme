@@ -59,9 +59,8 @@ git_clone("https://github.com/tidyverse/tidyverse", repo_name = "my_favorite_rep
 `package_version_cran()`, `package_version_github()`: Retrieve the most recent package version on the CRAN/Github. Helper methods for `check_package()`, `update_package()`, and family members.
 
 ```r
-package_version_cran(package = "ggplot2")
-
-package_version_github(repo = "ShadeWilson/ihme")
+package_version_cran("ggplot2")
+package_version_github("ShadeWilson/ihme")
 ```
 
 `check_package()`, `check_package_all()`: Check if a locally downloaded package for use on the cluster is up to date with the lastest version available. The github_repo option is for packages hosted on Github rather than the CRAN (or you want the developer version instead). `check_package_all()` is a wrapper for `check_package()` that allows you to check the version status of multiple packages at a time.
@@ -70,12 +69,16 @@ package_version_github(repo = "ShadeWilson/ihme")
 check_package(package = "ggplot2", folder = folder)
 check_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
 
-# can also list packages in a folder with list.files()
-packages <- c("data.table", "devtools", "ggplot2" , "ihme", "lme4", "openxlsx", "tibble" , "tidyr")
-check_package_all(packages, folder, github_repo = "ShadeWilson/ihme")
+# can also list packages in a folder with list.files(folder)
+# all packages hosted on the CRAN
+cran_packages <- c("data.table", "devtools", "ggplot2", "lme4", "openxlsx", "tibble" , "tidyr")
+check_package_all(cran_packages, folder)
 
+# all packages on the CRAN except "ihme", which is hosted on Github
+mixed_packages <- c("data.table", "devtools", "ggplot2" , "ihme", "lme4", "openxlsx", "tibble" , "tidyr")
 github_repos <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
-check_package_all(packages, folder, github_repo = github_repos)
+
+check_package_all(mixed_packages, folder, github_repo = github_repos)
 ```
 
 
