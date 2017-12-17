@@ -35,7 +35,7 @@ utils::packageDescription('ihme')
 
 
 # Get the most recent package version available on the CRAN
-package_version_cran = function(package, cran_url="http://cran.r-project.org/web/packages/") {
+package_version_cran <- function(package, cran_url="http://cran.r-project.org/web/packages/") {
 
   # Create URL
   cran_pkg_loc <- paste0(cran_url, package)
@@ -83,7 +83,7 @@ package_version_github(repo = "ShadeWilson/ihme")
 
 # check if locally downloaded package for use on cluster is up to date with the CRAN version
 # github option is for if the package is hosted on github rather than the CRAN (or you want the dev version)
-check_package <- function(package, folder, github_repo = NULL){
+check_package <- function(package, folder, github_repo = NA){
   message(paste0(package, ":"))
 
   # Obtain the installed package information
@@ -92,7 +92,7 @@ check_package <- function(package, folder, github_repo = NULL){
   # Grab the package information from CRAN
   latest_version <- package_version_cran(package)
 
-  if (length(latest_version) == 0L && !is.null(github_repo)) {
+  if (length(latest_version) == 0L && !is.na(github_repo)) {
     latest_version <- package_version_github(github_repo)
   }
 
@@ -127,13 +127,15 @@ check_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
 
 
 # wrapper for check_package, allows easy way to check multiple packages in a single folder
-check_package_all <- function(packages, folder) {
+check_package_all <- function(packages, folder, github_repo = NA) {
   stopifnot(is.character(packages))
 
-  invisible(lapply(packages, check_package, folder = folder))
+  invisible(mapply(check_package, package = packages, folder = folder, github_repo = github_repo))
 }
 
-check_package_all(packages, folder)
+github <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
+check_package_all(packages, folder, github_repo = "ShadeWilson/ihme")
+check_package_all(packages, folder, github_repo = github)
 
 
 
