@@ -2,8 +2,8 @@ Package: ihme
 Title: Functions for Improving Life at IHME
 Version: 0.1.0.0
 Authors@R: person("Shade", "Wilson", email = "shadew@uw.edu", role = c("aut", "cre"))
-URL: https://github.com/ShadeWilson/sourceables
-BugReports: https://github.com/ShadeWilson/sourceables/issues
+URL: https://github.com/ShadeWilson/ihme
+BugReports: https://github.com/ShadeWilson/ihme/issues
 Description: Functions to improve efficiency, minimize copying/pasting common code, and 
     abstract away unimportant details like exact filepaths to make your life easier at the
     Institute for Health Metrics and Evaluation (IHME). Currently under development.

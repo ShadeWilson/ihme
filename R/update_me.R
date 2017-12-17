@@ -82,18 +82,23 @@ package_version_github(repo = "ShadeWilson/ihme")
 
 
 # check if locally downloaded package for use on cluster is up to date with the CRAN version
-check_package <- function(package, folder){
+# github option is for if the package is hosted on github rather than the CRAN (or you want the dev version)
+check_package <- function(package, folder, github_repo = NULL){
   message(paste0(package, ":"))
 
   # Obtain the installed package information
   local_package <- utils::packageDescription(package, lib.loc = folder)
 
   # Grab the package information from CRAN
-  cran_version <- package_version_cran(package)
+  latest_version <- package_version_cran(package)
+
+  if (length(latest_version) == 0L && !is.null(github_repo)) {
+    latest_version <- package_version_github(github_repo)
+  }
 
   # Verify we have package information
-  if(!is.null(cran_version) && length(cran_version) != 0L){
-    latest_version <- utils::compareVersion(cran_version, local_package$Version)
+  if(!is.null(latest_version) && length(latest_version) != 0L){
+    latest_version <- utils::compareVersion(latest_version, local_package$Version)
 
     status <- if(latest_version == 0){
       'CURRENT'
@@ -104,12 +109,9 @@ check_package <- function(package, folder){
     }
 
   }else{ # Gracefully fail.
-    if (package == "ihme") {
+    status <- "ERROR IN OBTAINING REMOTE VERSION INFO"
+    latest_version <- 0
 
-    } else {
-      status <- "ERROR IN OBTAINING REMOTE VERSION INFO"
-      latest_version <- 0
-    }
   }
 
   message(paste0('Version: ', local_package$Version, ' (', status,') of ', package, ' built on ', local_package$Date))
@@ -121,6 +123,7 @@ check_package <- function(package, folder){
 
 
 check_package(package = "ggplot2", folder = folder)
+check_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
 
 
 # wrapper for check_package, allows easy way to check multiple packages in a single folder
