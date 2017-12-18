@@ -83,6 +83,8 @@ package_version_github("ShadeWilson/ihme")
 
 # check if locally downloaded package for use on cluster is up to date with the CRAN version
 # github option is for if the package is hosted on github rather than the CRAN (or you want the dev version)
+# concise gives a concise message whether the package is current or not as well
+# as a bool (true if it is the lastest, false if not)
 check_package <- function(package, folder, github_repo = NA, concise = FALSE){
   message(paste0(package, ":"))
 
@@ -115,8 +117,8 @@ check_package <- function(package, folder, github_repo = NA, concise = FALSE){
   }
 
   if (concise) {
-
-    return(message(status))
+    message(status)
+    return(ifelse(latest_version == 0, TRUE, FALSE))
   }
 
   message(paste0('Version: ', local_package$Version, ' (', status,') of ', package, ' built on ', local_package$Date))
@@ -132,10 +134,10 @@ check_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
 
 
 # wrapper for check_package, allows easy way to check multiple packages in a single folder
-check_package_all <- function(packages, folder, github_repo = NA) {
+check_package_all <- function(packages, folder, github_repo = NA, concise = FALSE) {
   stopifnot(is.character(packages))
 
-  invisible(mapply(check_package, package = packages, folder = folder, github_repo = github_repo))
+  invisible(mapply(check_package, package = packages, folder = folder, github_repo = github_repo, concise = concise))
 }
 
 # TODO: make helper function to tell which are hosted on github?
@@ -143,11 +145,36 @@ check_package_all <- function(packages, folder, github_repo = NA) {
 github_repos <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
 check_package_all(packages, folder)
 check_package_all(packages, folder, github_repo = github_repos)
+check_package_all(packages, folder, github_repo = github_repos, concise = TRUE)
 
+install.packages("tidyr", lib = folder)
 
+update_package <- function(package, folder, github_repo = NA) {
+  is_current <- check_package(package, folder = folder, concise = TRUE)
 
+  # if the package is already current, don't re-install
+  if (is_current) {
+    return(message(paste0("Package ", package, " is up to date already.")))
+  }
 
+  # if the package version is out of date:
+  if (!is_current) {
+    if (!is.na(github_repo)) {
+      message(paste0("Updating package", package, " at ", folder))
+      args <- paste0('--library=\"', folder, "\"")
 
+      devtools::install_github(github_repo, args = args, force = TRUE)
+      message(paste0("Please refresh your session of R to use the updated version of package ", package, "."))
+    }
+    else {
+      install.packages(package, lib = folder)
+    }
+  }
+
+  message("Finished installation in ", folder, ".")
+}
+
+update_package("data.table", folder)
 
 
 
