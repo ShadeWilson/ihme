@@ -10,7 +10,7 @@
 #' git_clone("https://github.com/ShadeWilson/ihme")
 #' git_clone("https://github.com/tidyverse/tidyverse", repo_name = "my_favorite_repo")
 
-# give ability to change where cloned, rn default to h drive
+# TODO: give ability to change where cloned, rn default to h drive
 
 git_clone <- function(repo_url, repo_name = NULL) {
   setup()
