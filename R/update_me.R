@@ -176,5 +176,13 @@ update_package <- function(package, folder, github_repo = NA) {
 
 update_package("data.table", folder)
 
+update_package_all <- function(packages, folder, github_repo = NA) {
+  stopifnot(is.character(packages))
+
+  invisible(mapply(update_package, package = packages, folder = folder, github_repo = github_repo))
+}
+
+some_packages <- packages[5:8]
+update_package_all(some_packages, folder)
 
 
