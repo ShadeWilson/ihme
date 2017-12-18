@@ -15,6 +15,7 @@
 #' @export
 #' @examples
 #' package_version_cran("ggplot2")
+#' package_version_github("ShadeWilson/ihme")
 
 
 
@@ -47,8 +48,6 @@ package_version_cran <- function(package, cran_url="http://cran.r-project.org/we
 # TODO add better error handling
 
 #' @describeIn package_version_cran Get Github package version
-#' @examples
-#' package_version_github("ShadeWilson/ihme")
 
 package_version_github <- function(repo) {
   raw_url <- paste0("https://raw.githubusercontent.com/", repo, "/master/DESCRIPTION")
@@ -94,6 +93,17 @@ package_version_github <- function(repo) {
 #' check_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
 #'
 #' check_package_all(packages, folder)
+#'
+#' cran_packages <- c("data.table", "devtools", "ggplot2", "lme4", "openxlsx", "tibble" , "tidyr")
+#'
+#' # all packages hosted on the CRAN
+#' check_package_all(cran_packages, folder)
+#'
+#' # all packages on the CRAN except "ihme", which is hosted on Github
+#' mixed_packages <- c("data.table", "devtools", "ggplot2" , "ihme", "lme4", "openxlsx", "tibble" , "tidyr")
+#' github_repos <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
+#'
+#' check_package_all(mixed_packages, folder, github_repo = github_repos)
 
 check_package <- function(package, folder, github_repo = NA, concise = FALSE){
   message(paste0(package, ":"))
@@ -147,21 +157,6 @@ check_package <- function(package, folder, github_repo = NA, concise = FALSE){
 
 
 #' @describeIn check_package Wrapper for checking multiple packages at once
-#' folder <- "H:/packages"
-#' cran_packages <- c("data.table", "devtools", "ggplot2", "lme4", "openxlsx", "tibble" , "tidyr")
-#'
-#' # can also list packages in a folder with list.files(folder)
-#' packages <- list.files("H:/packages")
-#'
-#' # all packages hosted on the CRAN
-#' check_package_all(cran_packages, folder)
-#'
-#' # all packages on the CRAN except "ihme", which is hosted on Github
-#' mixed_packages <- c("data.table", "devtools", "ggplot2" , "ihme", "lme4", "openxlsx", "tibble" , "tidyr")
-#' github_repos <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
-#'
-#' check_package_all(mixed_packages, folder, github_repo = github_repos)
-
 check_package_all <- function(package, folder, github_repo = NA, concise = FALSE) {
   stopifnot(is.character(package))
 

@@ -27,20 +27,6 @@ vector of multiple packages
 \section{Functions}{
 \itemize{
 \item \code{check_package_all}: Wrapper for checking multiple packages at once
-folder <- "H:/packages"
-cran_packages <- c("data.table", "devtools", "ggplot2", "lme4", "openxlsx", "tibble" , "tidyr")
-
-# can also list packages in a folder with list.files(folder)
-packages <- list.files("H:/packages")
-
-# all packages hosted on the CRAN
-check_package_all(cran_packages, folder)
-
-# all packages on the CRAN except "ihme", which is hosted on Github
-mixed_packages <- c("data.table", "devtools", "ggplot2" , "ihme", "lme4", "openxlsx", "tibble" , "tidyr")
-github_repos <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
-
-check_package_all(mixed_packages, folder, github_repo = github_repos)
 }}
 
 \examples{
@@ -51,4 +37,15 @@ check_package("ggplot2", folder = folder, concise = TRUE)
 check_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
 
 check_package_all(packages, folder)
+
+cran_packages <- c("data.table", "devtools", "ggplot2", "lme4", "openxlsx", "tibble" , "tidyr")
+
+# all packages hosted on the CRAN
+check_package_all(cran_packages, folder)
+
+# all packages on the CRAN except "ihme", which is hosted on Github
+mixed_packages <- c("data.table", "devtools", "ggplot2" , "ihme", "lme4", "openxlsx", "tibble" , "tidyr")
+github_repos <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
+
+check_package_all(mixed_packages, folder, github_repo = github_repos)
 }
