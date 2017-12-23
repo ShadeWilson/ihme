@@ -28,9 +28,11 @@ ihme::setup() # (or any other function in the package)
 library("ihme", lib.loc = "~/packages") # lib.loc is wherever you have the package saved
 ```
 
-**Functions currently available:** `setup()`, `source_functions()`, `git_clone()`
+**Functions currently available:** `setup()`, `source_functions()`, `git_clone()`, `package_version_cran()`, `package_version_github()`, `check_package()`, `check_package_all()`, `check_package_all()`, `update_package()`, `update_package_all()`
 
-**Functions under development:** `qsub()` (and related functions), functions to facilitate checking and updating packages for use on the cluster
+**Functions under development:** `qsub()` (and related functions), functions for uploading hospital data
+
+Below are descriptions of each function and examples of how to use them.
 
 `setup()`: Automated environment setup based on the operating system. Gives default variable names of j_root, h_root, and user, but any argument can be passed a different name if desired.
 
@@ -66,7 +68,10 @@ package_version_github("ShadeWilson/ihme")
 `check_package()`, `check_package_all()`: Check if a locally downloaded package for use on the cluster is up to date with the lastest version available. The github_repo option is for packages hosted on Github rather than the CRAN (or you want the developer version instead). `check_package_all()` is a wrapper for `check_package()` that allows you to check the version status of multiple packages at a time.
 
 ```r
-check_package(package = "ggplot2", folder = folder)
+setup()
+folder <- paste0(h_root, "packages")
+
+check_package("ggplot2", folder = folder)
 check_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
 
 # can also list packages in a folder with list.files(folder)
@@ -81,9 +86,25 @@ github_repos <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
 check_package_all(mixed_packages, folder, github_repo = github_repos)
 ```
 
+`update_package()`, `update_package_all()`: Update one or all packages in a single, local folder to ease package version control when working on the cluster or elsewhere remotely. Will only update the packages that are determined to be out of date to avoid wasting time re-downloading packages that are already current.
+
+```r
+setup()
+folder <- paste0(h_root, "packages")
+
+update_package("data.table", folder)
+update_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
+
+packages <- list.files(folder)
+update_package_all(packages, folder)
+```
 
 
 ## Updates
+
+**0.2.1.0** Fix documentation bug with some of the package version control functions.
+
+**0.2.0.0**: Add in package version control functions.
 
 **0.1.0.0**: Update version number to follow conventions. Fix bug in `source_functions()`.
 
