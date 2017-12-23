@@ -17,8 +17,21 @@ check_package_all(package, folder, github_repo = NA, concise = FALSE)
 \item{github_repo}{Specifies the Github repo the package is hosted at. Defaults to NA for packages hosted on the CRAN}
 
 \item{concise}{Whether or not to return a concise message on the package status (CURRENT, OUT OF DATE, etc.) Defaults to FALSE.}
+
+\item{package}{Name of the package as a string}
+
+\item{folder}{Folder (directory) where all the packages are stored}
+
+\item{github_repo}{Specifies the Github repo the package is hosted at. Defaults to NA for packages hosted on the CRAN}
+
+\item{concise}{Whether or not to return a concise message on the package status (CURRENT, OUT OF DATE, etc.) Defaults to FALSE.}
 }
 \description{
+Check if a locally downloaded package for use on the cluster is up to date with the
+lastest version available. Works for a package hosted on either the CRAN or on Github. For checking mutliple
+packages at once, use check_package_all(): a wrapper for check_package that allows you to pass in a character
+vector of multiple packages
+
 Check if a locally downloaded package for use on the cluster is up to date with the
 lastest version available. Works for a package hosted on either the CRAN or on Github. For checking mutliple
 packages at once, use check_package_all(): a wrapper for check_package that allows you to pass in a character
@@ -30,6 +43,24 @@ vector of multiple packages
 }}
 
 \examples{
+folder <- "H:/packages"
+packages <- list.files("H:/packages")
+
+check_package("ggplot2", folder = folder, concise = TRUE)
+check_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
+
+check_package_all(packages, folder)
+
+cran_packages <- c("data.table", "devtools", "ggplot2", "lme4", "openxlsx", "tibble" , "tidyr")
+
+# all packages hosted on the CRAN
+check_package_all(cran_packages, folder)
+
+# all packages on the CRAN except "ihme", which is hosted on Github
+mixed_packages <- c("data.table", "devtools", "ggplot2" , "ihme", "lme4", "openxlsx", "tibble" , "tidyr")
+github_repos <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
+
+check_package_all(mixed_packages, folder, github_repo = github_repos)
 folder <- "H:/packages"
 packages <- list.files("H:/packages")
 

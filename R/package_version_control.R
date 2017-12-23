@@ -17,8 +17,6 @@
 #' package_version_cran("ggplot2")
 #' package_version_github("ShadeWilson/ihme")
 
-
-
 package_version_cran <- function(package, cran_url="http://cran.r-project.org/web/packages/") {
 
   # Create URL
@@ -47,7 +45,16 @@ package_version_cran <- function(package, cran_url="http://cran.r-project.org/we
 # check package version of something hosted on github (ex: this package)
 # TODO add better error handling
 
-#' @describeIn package_version_cran Get Github package version
+#' Get the most recent package version available
+#' @description Retrieve the package version for the latest package available on either the CRAN or Github.
+#' Since the approval process for packages on the CRAN can lag behind the pace of development, the Github version
+#' of packages that are hosted there is likely to be more up to date. Helper methods for check_package(), update_package(),
+#' and family members.
+#' @param repo the name of the package repository on Github as a string
+#' @export
+#' @examples
+#' package_version_cran("ggplot2")
+#' package_version_github("ShadeWilson/ihme")
 
 package_version_github <- function(repo) {
   raw_url <- paste0("https://raw.githubusercontent.com/", repo, "/master/DESCRIPTION")
@@ -154,7 +161,35 @@ check_package <- function(package, folder, github_repo = NA, concise = FALSE){
 # check_package(package = "ggplot2", folder = folder, concise = TRUE)
 # check_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
 
-
+#' Check if a package is up to date with the latest version
+#' @description Check if a locally downloaded package for use on the cluster is up to date with the
+#' lastest version available. Works for a package hosted on either the CRAN or on Github. For checking mutliple
+#' packages at once, use check_package_all(): a wrapper for check_package that allows you to pass in a character
+#' vector of multiple packages
+#' @param package Name of the package as a string
+#' @param folder Folder (directory) where all the packages are stored
+#' @param github_repo Specifies the Github repo the package is hosted at. Defaults to NA for packages hosted on the CRAN
+#' @param concise Whether or not to return a concise message on the package status (CURRENT, OUT OF DATE, etc.) Defaults to FALSE.
+#' @export
+#' @examples
+#' folder <- "H:/packages"
+#' packages <- list.files("H:/packages")
+#'
+#' check_package("ggplot2", folder = folder, concise = TRUE)
+#' check_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
+#'
+#' check_package_all(packages, folder)
+#'
+#' cran_packages <- c("data.table", "devtools", "ggplot2", "lme4", "openxlsx", "tibble" , "tidyr")
+#'
+#' # all packages hosted on the CRAN
+#' check_package_all(cran_packages, folder)
+#'
+#' # all packages on the CRAN except "ihme", which is hosted on Github
+#' mixed_packages <- c("data.table", "devtools", "ggplot2" , "ihme", "lme4", "openxlsx", "tibble" , "tidyr")
+#' github_repos <- c(rep(NA, 3), "ShadeWilson/ihme", rep(NA, 4))
+#'
+#' check_package_all(mixed_packages, folder, github_repo = github_repos)
 
 #' @describeIn check_package Wrapper for checking multiple packages at once
 check_package_all <- function(package, folder, github_repo = NA, concise = FALSE) {
@@ -172,7 +207,7 @@ check_package_all <- function(package, folder, github_repo = NA, concise = FALSE
 
 
 #' Update locally downloaded package(s)
-#' @description Update one or many packages in a sinlge, local folder to ease version control when working on the cluster
+#' @description Update one or many packages in a single, local folder to ease version control when working on the cluster
 #' or elsewhere remotely. Will only update the packages that are determined to be out of date to avoid wasting time
 #' re-downloading packages that are already current.
 #' @param package Name of the package as a string
@@ -184,6 +219,9 @@ check_package_all <- function(package, folder, github_repo = NA, concise = FALSE
 #'
 #' update_package("data.table", folder)
 #' update_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
+#'
+#' some_packages <- packages[5:8]
+#' update_package_all(some_packages, folder)
 
 update_package <- function(package, folder, github_repo = NA) {
   is_current <- check_package(package, folder = folder, concise = TRUE)
@@ -213,12 +251,22 @@ update_package <- function(package, folder, github_repo = NA) {
 # update_package("data.table", folder)
 
 
-#' @describeIn update_package Wrapper for update_package
+#' Update locally downloaded package(s)
+#' @description Update one or many packages in a sinlge, local folder to ease version control when working on the cluster
+#' or elsewhere remotely. Will only update the packages that are determined to be out of date to avoid wasting time
+#' re-downloading packages that are already current.
+#' @param package Name of the package as a string
+#' @param folder Folder (directory) where all the packages are stored
+#' @param github_repo Specifies the Github repo the package is hosted at. Defaults to NA for packages hosted on the CRAN
+#' @export
 #' @examples
 #' folder <- "H:/packages"
-#' packages <- list.files(folder)
 #'
-#' update_package_all(packages, folder)
+#' update_package("data.table", folder)
+#' update_package("ihme", folder = folder, github_repo = "ShadeWilson/ihme")
+#' some_packages <- packages[5:8]
+#' update_package_all(some_packages, folder)
+
 
 update_package_all <- function(package, folder, github_repo = NA) {
   stopifnot(is.character(package))
