@@ -12,7 +12,7 @@ devtools::install_github("ShadeWilson/ihme")
 # to download the package for use on the cluster 
 # change the library argument to wherever you want it to be saved
 # Here I save to H:/packages
-devtools::install_github("ShadeWilson/ihme", args = c('--library="H:/packages/"')
+devtools::install_github("ShadeWilson/ihme", args = c('--library="H:/packages/"'))
 ```
 
 ## Usage
