@@ -23,7 +23,7 @@ git_clone <- function(repo_url, repo_name = NULL) {
 
   # if not, check the OS. Matters because linux/mac commands WONT work on windows
   if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
-    system(paste0("git clone", repo_url, " ", h_root, repo_name))
+    system(paste0("git clone ", repo_url, " ", h_root, repo_name))
   } else {
     # create temp shell script to run on Windows command line that opens a bash shell and executes
     temp_file <- "git_clone.sh"
