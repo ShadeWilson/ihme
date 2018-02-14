@@ -7,7 +7,7 @@ BugReports: https://github.com/ShadeWilson/ihme/issues
 Description: Functions to improve efficiency, minimize copying/pasting common code, and 
     abstract away unimportant details like exact filepaths to make your life easier at the
     Institute for Health Metrics and Evaluation (IHME). Currently under development.
-Depends: R (>= 3.4.0)
+Depends: R (>= 3.3.2)
 Imports:
     devtools
 License: MIT + file LICENSE
