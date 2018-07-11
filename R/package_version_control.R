@@ -278,3 +278,24 @@ update_package_all <- function(package, folder, github_repo = NA) {
 # update_package_all(some_packages, folder)
 
 
+
+
+# helper method to grab imported packages
+
+# filepath <- paste0(h_root, "packages/dplyr/DESCRIPTION")
+#
+# read_file <- function(filepath) {
+#   con = file(filepath, "r")
+#   while ( TRUE ) {
+#     line = readLines(con, n = 1)
+#     if ( length(line) == 0 ) {
+#       break
+#     }
+#     print(line)
+#   }
+#
+#   close(con)
+# }
+# read_file(filepath)
+
+
