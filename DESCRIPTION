@@ -1,7 +1,9 @@
 Package: ihme
 Title: Functions for Improving Life at IHME
-Version: 0.3.0.0
-Authors@R: person("Shade", "Wilson", email = "shadew@uw.edu", role = c("aut", "cre"))
+Version: 0.4.0.0
+Authors@R: c(
+    person("Shade", "Wilson", email = "shadew@uw.edu", role = c("aut", "cre")),
+    person("Grant", "Nguyen", email = "gngu@uw.edu", role = "aut"))
 URL: https://github.com/ShadeWilson/ihme
 BugReports: https://github.com/ShadeWilson/ihme/issues
 Description: Functions to improve efficiency, minimize copying/pasting common code, and 

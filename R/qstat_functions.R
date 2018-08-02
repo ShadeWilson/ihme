@@ -9,14 +9,9 @@
 
 library(XML)
 library(magrittr)
-library("ihme", lib.loc = "/home/j/temp/shadew")
 library(dplyr)
 
 setup()
-source_functions(get_location_metadata = T)
-source()
-
-loc_data <- get_location_metadata(35)
 
 #' Returns the number of jobs running at each location level
 #'
@@ -25,6 +20,7 @@ loc_data <- get_location_metadata(35)
 #' @param location_metadata df returned from get_location_metadata shared function
 #'
 dismod_status <- function(MVID, user, location_metadata = loc_data) {
+  loc_data <- read.csv(paste0(h_root, "ihme_r_pkg_files/location_metadata.csv"))
   qstat <- system(paste0("qstat -u ", user, " -xml"), intern = TRUE)
 
   qstat_list <- xmlToList(qstat)
@@ -70,9 +66,9 @@ dismod_status <- function(MVID, user, location_metadata = loc_data) {
 }
 
 # example
-hmwe_mvids <- c(329123, 329837, 329852)
-
-dismod_status(MVID = 329123, user = "hmwekyu")
+# hmwe_mvids <- c(329123, 329837, 329852)
+#
+# dismod_status(MVID = 329123, user = "hmwekyu")
 
 
 
