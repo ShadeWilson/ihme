@@ -157,7 +157,7 @@ source_functions <- function(create_connection_string = FALSE,   # WAVE 1
 }
 
 # source_functions(get_location_metadata = TRUE, get_ids = T, get_cause_metadata = T)
-source_functions(get_location_metadata = T)
+# source_functions(get_location_metadata = T)
 # source_functions(get_location_metadata = TRUE, get_ids = TRUE)
 # source_functions(get_location_metadata = TRUE)
 

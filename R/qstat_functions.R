@@ -78,16 +78,3 @@ dismod_status(MVID = 329123, user = "hmwekyu")
 
 
 
-# as ----------------------------------------------------------------------
-
-library(rjson)
-json <- fromJSON(file = paste0(h_root, "private_url.json"))
-
-
-post_slack <- function(message, url) {
-  system(paste0("curl -X POST -H \'Content-type: application/json' --data \'{\"text\": \"", message, "\", \"link_names\": 1}\' ", url))
-}
-
-
-
-
