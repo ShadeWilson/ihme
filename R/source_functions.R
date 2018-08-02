@@ -99,8 +99,10 @@ source_functions <- function(create_connection_string = FALSE,   # WAVE 1
 
   # check if the repo has already been cloned
   if (!("ihme_r_pkg_files" %in% list.files(paste0(h_root)))) {
-    message("Cloning in repo containing file paths for shared functions from a secure location. Once cloned, this won't happen again.")
-    git_clone("https://shadew@stash.ihme.washington.edu/scm/~shadew/ihme_r_pkg_files.git")
+    message("Need to clone repo containing file paths for shared functions, which is from a secure location. Once cloned, this won't happen again.")
+    message("Please copy/paste the following line into a terminal window.")
+    message(paste0("git clone https://shadew@stash.ihme.washington.edu/scm/~shadew/ihme_r_pkg_files.git ", h_root, "ihme_r_pkg_files"))
+    return()
   }
 
   inner_path <- readChar(paste0(h_root, "ihme_r_pkg_files/inner_path"), file.info(paste0(h_root, "ihme_r_pkg_files/inner_path"))$size)
@@ -155,7 +157,7 @@ source_functions <- function(create_connection_string = FALSE,   # WAVE 1
 }
 
 # source_functions(get_location_metadata = TRUE, get_ids = T, get_cause_metadata = T)
-# source_functions(get_location_metadata = T)
+source_functions(get_location_metadata = T)
 # source_functions(get_location_metadata = TRUE, get_ids = TRUE)
 # source_functions(get_location_metadata = TRUE)
 
