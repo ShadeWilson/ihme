@@ -62,19 +62,24 @@ qstat <- function(username = user, full = FALSE, grep = "", verbose = FALSE, sta
   }
 
 
-  q <- as.data.frame(system(command, intern = TRUE))
-  names(q) <- "col"
+  q <- suppressWarnings(data.table::as.data.table(system(command, intern = TRUE)))
+  data.table::setnames(q, "V1", "col")
 
   q <- suppressWarnings(tidyr::separate(q, into = c(paste0("v", 1:10)), col = col, sep = " +"))
-  q$v1 <- NULL
-  names(q) <- c("JB_job_number", "JAT_prio", "JB_name", "JB_owner", "state_id", "JB_submission_date", "JB_submission_time", "queue", "slots")
-  q <- dplyr::mutate(q, node = stringr::str_extract(queue, "c[n2].*\\d"))
+  q[, v1 := NULL]
 
-  attr(q, "time") <- Sys.time()
-  return(q)
+  names(q) <- c("JB_job_number", "JAT_prio", "JB_name", "JB_owner", "state_id", "JB_submission_date", "JB_submission_time", "queue", "slots")
+  q[, node := stringr::str_extract(queue, "c[n2].*\\d")]
+
+  data.table::setattr(q, "time", Sys.time())
+  return(q[])
 }
 
-
+qstat_dismod <- function() {
+  q <- qstat(full = TRUE, grep = "dm_")
+  q[, mvid := stringr::str_extract(JB_name, "\\d{6}")]
+  return(q[])
+}
 
 
 
