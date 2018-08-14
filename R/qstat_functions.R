@@ -11,6 +11,8 @@ library(XML)
 library(magrittr)
 library(dplyr)
 
+library(data.table)
+
 setup()
 
 #' Basic qstat functionality for monitoring jobs running on the Sun Grid Engine.
@@ -75,12 +77,22 @@ qstat <- function(username = user, full = FALSE, grep = "", verbose = FALSE, sta
   return(q[])
 }
 
-qstat_dismod <- function() {
-  q <- qstat(full = TRUE, grep = "dm_")
-  q[, mvid := stringr::str_extract(JB_name, "\\d{6}")]
-  return(q[])
+qstat_dismod <- function(username = user, model_version_id = NA) {
+  if (!is.na(model_version_id)) {
+    return(dismod_status(MVID = model_version_id, username = username))
+  } else {
+    q <- qstat(username = user, full = TRUE, grep = "dm_")
+    q[, mvid := stringr::str_extract(JB_name, "\\d{6}")]
+
+    q <- q %>% group_by(mvid, JB_owner) %>%
+      summarize(jobs = n()) %>%
+      as.data.table()
+
+    return(q[])
+  }
 }
 
+qstat_dismod(username = "tvos", model_version_id = 358979)
 
 
 
@@ -90,7 +102,7 @@ qstat_dismod <- function() {
 #' @param user uuw net id of modeler running DisMod
 #' @param location_metadata df returned from get_location_metadata shared function
 #'
-dismod_status <- function(MVID, user, location_metadata = loc_data) {
+dismod_status <- function(username, MVID) {
   loc_data <- read.csv(paste0(h_root, "ihme_r_pkg_files/location_metadata.csv"))
   qstat <- system(paste0("qstat -u ", user, " -xml"), intern = TRUE)
 
@@ -102,8 +114,13 @@ dismod_status <- function(MVID, user, location_metadata = loc_data) {
   queue_df <- data.frame(matrix(unlist(queue_info), nrow=length(queue_info), byrow=T)) %>%
     select(-X7, X7 = X8, X8 = X9)
 
+  # handling for if only one job (varnish) is left? unclear how often this comes up
+  if (ncol(df) == 1) {
+    df <- queue_df
+  } else {
+    df <- rbind(df, queue_df)
+  }
 
-  df <- rbind(df, queue_df)
 
   names(df) <- c("JB_job_number", "JAT_prio", "JB_name", "JB_owner", "state_id", "JB_submission_time", "slots", "state")
 
@@ -121,7 +138,7 @@ dismod_status <- function(MVID, user, location_metadata = loc_data) {
   location_metadata <- mutate(loc_data, location_id = as.character(location_id))
 
   dm <- left_join(dm, location_metadata, by = "location_id") %>%
-    mutate(location_type = if_else(is.na(location_type), location_id, location_type))
+    mutate(location_type = if_else(is.na(location_type), location_id, as.character(location_type)))
 
   levels <- c("G0", "superregion", "region", "admin0", "varnish")
 
@@ -139,7 +156,7 @@ dismod_status <- function(MVID, user, location_metadata = loc_data) {
 # example
 # hmwe_mvids <- c(329123, 329837, 329852)
 #
-# dismod_status(MVID = 329123, user = "hmwekyu")
+dismod_status(username = "tvos", MVID = 358979)
 
 
 
