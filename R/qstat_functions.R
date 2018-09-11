@@ -65,9 +65,7 @@ qstat <- function(username = user, full = FALSE, grep = "", verbose = FALSE, sta
 
 
   q <- suppressWarnings(data.table::as.data.table(system(command, intern = TRUE)))
-  data.table::setnames(q, "V1", "col")
-
-  q <- suppressWarnings(tidyr::separate(q, into = c(paste0("v", 1:10)), col = col, sep = " +"))
+  q <- suppressWarnings(tidyr::separate(q, into = paste0("v", 1:10), col = V1, sep = " +"))
   q[, v1 := NULL]
 
   names(q) <- c("JB_job_number", "JAT_prio", "JB_name", "JB_owner", "state_id", "JB_submission_date", "JB_submission_time", "queue", "slots")
@@ -79,30 +77,26 @@ qstat <- function(username = user, full = FALSE, grep = "", verbose = FALSE, sta
 
 qstat_dismod <- function(username = user, model_version_id = NA) {
   if (!is.na(model_version_id)) {
-    return(dismod_status(MVID = model_version_id, username = username))
+    return(dismod_status(username = username, model_version_id = model_version_id))
   } else {
     q <- qstat(username = user, full = TRUE, grep = "dm_")
     q[, mvid := stringr::str_extract(JB_name, "\\d{6}")]
-
-    q <- q %>% group_by(mvid, JB_owner) %>%
-      summarize(jobs = n()) %>%
-      as.data.table()
-
+    q <- q[, .(jobs = .N), by = c("mvid", "JB_owner")]
     return(q[])
   }
 }
 
-qstat_dismod(username = "tvos", model_version_id = 358979)
+qstat_dismod(username = "shadew")
 
 
 
 #' Returns the number of jobs running at each location level
 #'
-#' @param MVID dismod model version ID
+#' @param model_version_id dismod model version ID
 #' @param user uuw net id of modeler running DisMod
 #' @param location_metadata df returned from get_location_metadata shared function
 #'
-dismod_status <- function(username, MVID) {
+dismod_status <- function(username, model_version_id) {
   loc_data <- read.csv(paste0(h_root, "ihme_r_pkg_files/location_metadata.csv"))
   qstat <- system(paste0("qstat -u ", user, " -xml"), intern = TRUE)
 
@@ -126,12 +120,12 @@ dismod_status <- function(username, MVID) {
 
   df <- df %>%
     filter(grepl("dm_", JB_name)) %>%
-    mutate(mvid = regmatches(JB_name, regexpr("^(dm_\\d{6})", JB_name)),
-                  mvid = gsub("dm_", "", mvid),
+    mutate(model_version_id = regmatches(JB_name, regexpr("^(dm_\\d{6})", JB_name)),
+                  model_version_id = gsub("dm_", "", model_version_id),
                   job_name_detail = gsub("^(dm_\\d{6})_", "", JB_name),
                   location_id = gsub("_[mf]_\\d+_.*$", "", job_name_detail))
 
-  dm <- filter(df, mvid == MVID)
+  dm <- filter(df, model_version_id == model_version_id)
 
   # tack on location ids
   location_metadata <- select(loc_data, location_id, location_name, location_type)
@@ -142,7 +136,7 @@ dismod_status <- function(username, MVID) {
 
   levels <- c("G0", "superregion", "region", "admin0", "varnish")
 
-  job_count <- group_by(dm, mvid, location_name, location_type, state_id) %>%
+  job_count <- group_by(dm, model_version_id, location_name, location_type, state_id) %>%
     summarize(jobs_left = n()) %>%
     mutate(progress = if_else(!is.na(location_name), paste0(signif((1 - jobs_left / 12) * 100, digits = 2), "%"), ""))
 
@@ -156,9 +150,7 @@ dismod_status <- function(username, MVID) {
 # example
 # hmwe_mvids <- c(329123, 329837, 329852)
 #
-dismod_status(username = "tvos", MVID = 358979)
-
-
+dismod_status(username = "tvos", model_version_id = 358979)
 
 
 

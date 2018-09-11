@@ -1,18 +1,20 @@
-
-
 #' Concise method to read in all arguments passed to an R script via the command line.
+#'
+#' @description Function to simplify reading in trailing arguments for a launched script. Designed for
+#'              concise syntax and a more scalable interface. Arguments can be passed in as both quoted
+#'              and unquoted strings.
 #'
 #' @param ... Pass in the variable names to assign to each trailing argument. Can be either
 #'            symbols (names) or strings. Number of arguments passed in to this function must
 #'            match exactly the number of trailing arguments. Trailing commandline arguments and
 #'            arguments are paired up 1 to 1, so the order must match as well (but is not checked).
 #'
-#' @return Variables for each trailing commandline argument with the given names
+#' @return Variables for each trailing commandline argument with the given names.
 #' @export
 #' @examples
-#' read_args(my_name, my_script, info)
+#' read_args(my_name, my_script, info) # read in trailing arguments as variables named `my_name`, `my_script`, and `info`
 #' read_args("location_id", "root_dir", "out_dir", "last_arg")
-#'
+
 read_args <- function(...) {
   args   <- commandArgs(trailingOnly = TRUE)
   params <- as.list(match.call())
@@ -34,9 +36,9 @@ read_args <- function(...) {
 # read_args(location_id, "root_dir", out_dir, last_arg)
 
 #' Helper function: deparse object names conditionally, only
-#' if the argument passed in is indeed an ibject name
+#' if the argument passed in is indeed an object name
 #'
-#' @returns string, deparsed name if was an object, returns original string otherwise
+#' @returns string; deparsed name if was an object, returns original string otherwise
 conditional_deparse <- function(a) {
   name <- if(is.name(a)) {
     deparse(a)
