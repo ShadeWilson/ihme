@@ -7,7 +7,6 @@
 
 #' @author Shade Wilson
 
-library(XML)
 library(magrittr)
 library(dplyr)
 
@@ -75,76 +74,60 @@ qstat <- function(username = user, full = FALSE, grep = "", verbose = FALSE, sta
   return(q[])
 }
 
+#' Qstating for dismod models explicitly
+#'
 qstat_dismod <- function(username = user, model_version_id = NA) {
+  q <- qstat(username = user, full = TRUE, grep = "dm_")
+
   if (!is.na(model_version_id)) {
-    return(dismod_status(username = username, model_version_id = model_version_id))
+    return(dismod_status(q, username = username, model_version_id = model_version_id))
   } else {
-    q <- qstat(username = user, full = TRUE, grep = "dm_")
     q[, mvid := stringr::str_extract(JB_name, "\\d{6}")]
     q <- q[, .(jobs = .N), by = c("mvid", "JB_owner")]
+
     return(q[])
   }
 }
 
-qstat_dismod(username = "shadew")
+qstat_dismod(username = "shadew", model_version_id = 123456)
 
 
 
 #' Returns the number of jobs running at each location level
 #'
+#' @param dt data.table of qstat jobs, passed in
 #' @param model_version_id dismod model version ID
 #' @param user uuw net id of modeler running DisMod
-#' @param location_metadata df returned from get_location_metadata shared function
 #'
-dismod_status <- function(username, model_version_id) {
-  loc_data <- read.csv(paste0(h_root, "ihme_r_pkg_files/location_metadata.csv"))
-  qstat <- system(paste0("qstat -u ", user, " -xml"), intern = TRUE)
-
-  qstat_list <- xmlToList(qstat)
-  job_info <- as.list(qstat_list[["job_info"]])
-  queue_info <- as.list(qstat_list[["queue_info"]])
-
-  df <- data.frame(matrix(unlist(job_info), nrow=length(job_info), byrow=T))
-  queue_df <- data.frame(matrix(unlist(queue_info), nrow=length(queue_info), byrow=T)) %>%
-    select(-X7, X7 = X8, X8 = X9)
-
-  # handling for if only one job (varnish) is left? unclear how often this comes up
-  if (ncol(df) == 1) {
-    df <- queue_df
-  } else {
-    df <- rbind(df, queue_df)
-  }
+dismod_status <- function(dt, username, model_version_id) {
+  loc_data <- data.table::fread(paste0(h_root, "ihme_r_pkg_files/location_metadata.csv"))
 
 
-  names(df) <- c("JB_job_number", "JAT_prio", "JB_name", "JB_owner", "state_id", "JB_submission_time", "slots", "state")
+  dt[, mvid := stringr::str_extract(JB_name, "\\d{6}")]
+  dt[, job_name_detail := gsub("^(dm_\\d{6})_", "", JB_name)]
+  dt[, location_id     := gsub("_[mf]_\\d+_.*$", "", job_name_detail)]
 
-  df <- df %>%
-    filter(grepl("dm_", JB_name)) %>%
-    mutate(model_version_id = regmatches(JB_name, regexpr("^(dm_\\d{6})", JB_name)),
-                  model_version_id = gsub("dm_", "", model_version_id),
-                  job_name_detail = gsub("^(dm_\\d{6})_", "", JB_name),
-                  location_id = gsub("_[mf]_\\d+_.*$", "", job_name_detail))
-
-  dm <- filter(df, model_version_id == model_version_id)
+  dm <- q[mvid == model_version_id]
 
   # tack on location ids
-  location_metadata <- select(loc_data, location_id, location_name, location_type)
-  location_metadata <- mutate(loc_data, location_id = as.character(location_id))
+  location_metadata <- loc_data[, c("location_id", "location_name", "location_type")]
+  location_metadata[, location_id := as.character(location_id)]
 
-  dm <- left_join(dm, location_metadata, by = "location_id") %>%
-    mutate(location_type = if_else(is.na(location_type), location_id, as.character(location_type)))
+  dm <- merge(dm, location_metadata, by = "location_id", all.x = TRUE)
+  dm[, location_type := if_else(is.na(location_type), location_id, as.character(location_type))]
 
+  # order the cascade levels: G0 (global) > ... > varnish (save results)
   levels <- c("G0", "superregion", "region", "admin0", "varnish")
 
-  job_count <- group_by(dm, model_version_id, location_name, location_type, state_id) %>%
-    summarize(jobs_left = n()) %>%
-    mutate(progress = if_else(!is.na(location_name), paste0(signif((1 - jobs_left / 12) * 100, digits = 2), "%"), ""))
+  # Summarize jobs left running/waiting
+  job_count <- dm[, .(jobs_left = .N), by = c("mvid", "location_name", "location_type", "state_id")]
+  job_count[, progress := if_else(!is.na(location_name), paste0(signif((1 - jobs_left / 12) * 100, digits = 2), "%"), "")]
 
   # order the jobs from global to subnational
   job_count$location_type <- factor(job_count$location_type, levels = levels)
   job_count <- arrange(job_count, location_type)
 
-  return(job_count)
+  return(job_count[])
 }
 
 # example
