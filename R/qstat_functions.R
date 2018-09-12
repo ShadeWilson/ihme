@@ -9,7 +9,6 @@
 
 library(data.table)
 
-setup()
 
 #' Basic qstat functionality for monitoring jobs running on the Sun Grid Engine.
 #'
