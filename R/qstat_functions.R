@@ -7,9 +7,6 @@
 
 #' @author Shade Wilson
 
-library(magrittr)
-library(dplyr)
-
 library(data.table)
 
 setup()
@@ -74,24 +71,35 @@ qstat <- function(username = user, full = FALSE, grep = "", verbose = FALSE, sta
   return(q[])
 }
 
-#' Qstating for dismod models explicitly
+#' Qstating for dismod models explicitly.
+#'
+#' @description Interface for checking job status of dismod jobs running on the cluster. Allows for in-depth progress
+#'              reports for specific models if desired
+#'
+#' @param username uuw net id of modeler running DisMod
+#' @param model_version_id unique MVID of the model to check progress. Default is NA, so will report
+#'                         total jobs running for each model that the modeler is running. If model_version_id is
+#'                         supplied, returns an in-depth summary of the jobs running for each location and the progress
+#'                         made.
+#'
+#' @return data.table summarizing dismod jobs
+#' @export
+#' @examples
+#' qstat_dismod(username = "shadew", model_version_id = 123456)
+#' qstat_dismod(username = "shadew")
 #'
 qstat_dismod <- function(username = user, model_version_id = NA) {
   q <- qstat(username = user, full = TRUE, grep = "dm_")
+  q[, mvid := stringr::str_extract(JB_name, "\\d{6}")]
 
   if (!is.na(model_version_id)) {
-    return(dismod_status(q, username = username, model_version_id = model_version_id))
+    return(dismod_status(dt = q, username = username, model_version_id = model_version_id))
   } else {
-    q[, mvid := stringr::str_extract(JB_name, "\\d{6}")]
     q <- q[, .(jobs = .N), by = c("mvid", "JB_owner")]
 
     return(q[])
   }
 }
-
-qstat_dismod(username = "shadew", model_version_id = 123456)
-
-
 
 #' Returns the number of jobs running at each location level
 #'
@@ -102,38 +110,36 @@ qstat_dismod(username = "shadew", model_version_id = 123456)
 dismod_status <- function(dt, username, model_version_id) {
   loc_data <- data.table::fread(paste0(h_root, "ihme_r_pkg_files/location_metadata.csv"))
 
-
-  dt[, mvid := stringr::str_extract(JB_name, "\\d{6}")]
+  dt <- data.table::copy(dt)
   dt[, job_name_detail := gsub("^(dm_\\d{6})_", "", JB_name)]
   dt[, location_id     := gsub("_[mf]_\\d+_.*$", "", job_name_detail)]
 
-  dm <- q[mvid == model_version_id]
+  dm <- dt[mvid == model_version_id]
 
   # tack on location ids
   location_metadata <- loc_data[, c("location_id", "location_name", "location_type")]
   location_metadata[, location_id := as.character(location_id)]
 
   dm <- merge(dm, location_metadata, by = "location_id", all.x = TRUE)
-  dm[, location_type := if_else(is.na(location_type), location_id, as.character(location_type))]
+  dm[, location_type := ifelse(is.na(location_type), location_id, as.character(location_type))]
 
   # order the cascade levels: G0 (global) > ... > varnish (save results)
   levels <- c("G0", "superregion", "region", "admin0", "varnish")
 
   # Summarize jobs left running/waiting
   job_count <- dm[, .(jobs_left = .N), by = c("mvid", "location_name", "location_type", "state_id")]
-  job_count[, progress := if_else(!is.na(location_name), paste0(signif((1 - jobs_left / 12) * 100, digits = 2), "%"), "")]
+  job_count[, progress := ifelse(!is.na(location_name), paste0(signif((1 - jobs_left / 12) * 100, digits = 2), "%"), "")]
 
   # order the jobs from global to subnational
   job_count$location_type <- factor(job_count$location_type, levels = levels)
-  job_count <- arrange(job_count, location_type)
+  job_count <- job_count[order(location_type), ]
 
   return(job_count[])
 }
 
-# example
-# hmwe_mvids <- c(329123, 329837, 329852)
-#
-dismod_status(username = "tvos", model_version_id = 358979)
+##########
+# qstat_dismod(username = "shadew", model_version_id = 123456)
+# qstat_dismod(username = "shadew")
 
 
 

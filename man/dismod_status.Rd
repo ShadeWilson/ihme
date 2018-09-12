@@ -4,14 +4,14 @@
 \alias{dismod_status}
 \title{Returns the number of jobs running at each location level}
 \usage{
-dismod_status(MVID, user, location_metadata = loc_data)
+dismod_status(dt, username, model_version_id)
 }
 \arguments{
-\item{MVID}{dismod model version ID}
+\item{dt}{data.table of qstat jobs, passed in}
+
+\item{model_version_id}{dismod model version ID}
 
 \item{user}{uuw net id of modeler running DisMod}
-
-\item{location_metadata}{df returned from get_location_metadata shared function}
 }
 \description{
 Returns the number of jobs running at each location level
