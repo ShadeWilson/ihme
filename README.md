@@ -136,17 +136,11 @@ update_package_all(packages, folder)
 Version | Updates
 --- | ---
 **0.5.0.0** | Add in several new functions: `read_args()` for easier parsing trailing arguments when launching a script, and two function built aroud qstating.
-
 **0.4.0.0** | Address bug breaking `source_functions()` for first-time users; minor edits.
-
 **0.3.0.0** | Add in `qsub()` functions.
-
 **0.2.1.0** | Fix documentation bug with some of the package version control functions.
-
 **0.2.0.0** | Add in package version control functions.
-
 **0.1.0.0** | Update version number to follow conventions. Fix bug in `source_functions()`.
-
 **0.0.2.9000** | Add function `git_clone()`. Replace file path mentions within code with calls to secure repos. Update `source_functions()`.
 
 
