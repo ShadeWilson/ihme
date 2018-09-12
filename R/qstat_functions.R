@@ -35,8 +35,8 @@ library(data.table)
 #' qstat()
 #' qstat(full = TRUE)
 #' qstat(grep = "sti")
-#' qstat(username = "emumford", full = TRUE, grep = "", verbose = TRUE)
-#' qstat(username = "shadew", grep = "", verbose = TRUE, state = "r")
+#' qstat(username = "emumford", full = TRUE, verbose = TRUE)
+#' qstat(username = "shadew", grep = "1.0", verbose = TRUE, state = "r")
 
 qstat <- function(username = user, full = FALSE, grep = "", verbose = FALSE, state = "") {
   command <- ""
@@ -70,7 +70,7 @@ qstat <- function(username = user, full = FALSE, grep = "", verbose = FALSE, sta
   return(q[])
 }
 
-#' Qstating for dismod models explicitly.
+#' Checking job status of DisMod models
 #'
 #' @description Interface for checking job status of dismod jobs running on the cluster. Allows for in-depth progress
 #'              reports for specific models if desired

@@ -11,7 +11,7 @@ devtools::install_github("ShadeWilson/ihme")
 
 # to download the package for use on the cluster 
 # change the library argument to wherever you want it to be saved
-# Here I save to H:/packages
+# Here I save to H:/packages. Hint: to compile correctly, I've found I need to run this locally
 devtools::install_github("ShadeWilson/ihme", args = c('--library="H:/packages/"'))
 ```
 
@@ -28,11 +28,13 @@ ihme::setup() # (or any other function in the package)
 library("ihme", lib.loc = "~/packages") # lib.loc is wherever you have the package saved
 ```
 
-**Functions currently available:** `setup()`, `source_functions()`, `git_clone()`, `package_version_cran()`, `package_version_github()`, `check_package()`, `check_package_all()`, `check_package_all()`, `update_package()`, `update_package_all()`
+**Functions currently available:** `setup()`, `source_functions()`, `git_clone()`, `read_args()`, `qstat()`, `qstat_dismod()`, `package_version_cran()`, `package_version_github()`, `check_package()`, `check_package_all()`, `check_package_all()`, `update_package()`, `update_package_all()`
 
-**Functions under development:** `qsub()` (and related functions), functions for uploading hospital data
+**Functions under development:** None currently. [Suggest one here](https://github.com/ShadeWilson/ihme/issues)!
 
 Below are descriptions of each function and examples of how to use them.
+
+### Basic functions
 
 `setup()`: Automated environment setup based on the operating system. Gives default variable names of j_root, h_root, and user, but any argument can be passed a different name if desired.
 
@@ -49,7 +51,36 @@ source_functions(get_cod_data = TRUE, get_results = TRUE)  # source both listed 
 source_functions(all = TRUE)                               # source all available shared functions
 ```
 
+### Cluster tools
+
 `qsub()`: Submit a job on the cluster through R with a simplyfied interface. Adapting code written by Grant Nguyen.
+
+```r
+jobname <- "my_job_name"
+args    <- list(out_dir, root_dir, location_id, model_version_id)
+  
+qsub(jobname, code = paste0(root_dir, code = "00_best_script.R"), pass = args,
+     slots = 5, submit = TRUE, proj = "proj_my_project", shell = "~/my_shell_script.sh")
+```
+
+`qstat()`: Basic qstat functionality for monitoring jobs running on the Sun Grid Engine (SGE).
+
+```r
+qstat()             # defaults to checking jobs for the current user
+qstat(full = TRUE)  # current user with full job names
+qstat(grep = "sti") # current user, only shows jobs whose job name contains "sti". Can pass any regex
+qstat(username = "emumford", full = TRUE, verbose = TRUE) # shows jobs for user "emumford", full job names, and prints qstat command
+qstat(username = "shadew", grep = "1.0", verbose = TRUE, state = "r") # qstat for "shadew" matching jobs with pattern "1.0" that are running
+```
+
+`qstat_dismod()`: Checking job status of DisMod models.
+
+```r
+qstat_dismod() # returns a summary table of number of jobs running for each model for user
+qstat_dismod(username = "shadew", model_version_id = 123456) # for "shadew" and given model, returns in-depth job summary table
+```
+
+### Package versioning tools
 
 `git_clone()`: Perform a git clone in R. Can choose a new name for the cloned repo or keep the original
 
@@ -102,12 +133,19 @@ update_package_all(packages, folder)
 
 ## Updates
 
-**0.2.1.0** Fix documentation bug with some of the package version control functions.
+Version | Updates
+**0.5.0.0** | Add in several new functions: `read_args()` for easier parsing trailing arguments when launching a script, and two function built aroud qstating.
 
-**0.2.0.0**: Add in package version control functions.
+**0.4.0.0** | Address bug breaking `source_functions()` for first-time users; minor edits.
 
-**0.1.0.0**: Update version number to follow conventions. Fix bug in `source_functions()`.
+**0.3.0.0** | Add in `qsub()` functions.
 
-**0.0.2.9000:** Add function `git_clone()`. Replace file path mentions within code with calls to secure repos. Update `source_functions()`.
+**0.2.1.0** | Fix documentation bug with some of the package version control functions.
+
+**0.2.0.0** | Add in package version control functions.
+
+**0.1.0.0** | Update version number to follow conventions. Fix bug in `source_functions()`.
+
+**0.0.2.9000** | Add function `git_clone()`. Replace file path mentions within code with calls to secure repos. Update `source_functions()`.
 
 
