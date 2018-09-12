@@ -80,6 +80,16 @@ qstat_dismod() # returns a summary table of number of jobs running for each mode
 qstat_dismod(username = "shadew", model_version_id = 123456) # for "shadew" and given model, returns in-depth job summary table
 ```
 
+`read_args()`: Concise method to read in all arguments passed to an R script via the command line.
+
+```r
+# if reading in arguments from script qsub-ed in example above:
+read_args(out_dir, root_dir, location_id, model_version_id)
+
+# can also use strings
+read_args(paste0(var, 1:4))
+```
+
 ### Package versioning tools
 
 `git_clone()`: Perform a git clone in R. Can choose a new name for the cloned repo or keep the original
