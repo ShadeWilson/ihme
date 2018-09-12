@@ -134,6 +134,7 @@ update_package_all(packages, folder)
 ## Updates
 
 Version | Updates
+--- | ---
 **0.5.0.0** | Add in several new functions: `read_args()` for easier parsing trailing arguments when launching a script, and two function built aroud qstating.
 
 **0.4.0.0** | Address bug breaking `source_functions()` for first-time users; minor edits.
