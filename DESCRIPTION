@@ -1,6 +1,6 @@
 Package: ihme
 Title: Functions for Improving Life at IHME
-Version: 0.5.1.0
+Version: 0.5.1.1
 Authors@R: c(
     person("Shade", "Wilson", email = "shadew@uw.edu", role = c("aut", "cre")),
     person("Grant", "Nguyen", email = "gngu@uw.edu", role = "aut"))
@@ -9,7 +9,7 @@ BugReports: https://github.com/ShadeWilson/ihme/issues
 Description: Functions to improve efficiency, minimize copying/pasting common code, and 
     abstract away unimportant details like exact filepaths to make your life easier at the
     Institute for Health Metrics and Evaluation (IHME). Currently under development.
-Depends: R (>= 3.3.2)
+Depends: R (>= 3.3.2), data.table
 Imports:
     devtools, data.table
 License: MIT + file LICENSE

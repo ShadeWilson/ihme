@@ -2,7 +2,7 @@
 % Please edit documentation in R/qstat_functions.R
 \name{qstat_dismod}
 \alias{qstat_dismod}
-\title{Qstating for dismod models explicitly.}
+\title{Checking job status of DisMod models}
 \usage{
 qstat_dismod(username = user, model_version_id = NA)
 }

@@ -7,7 +7,7 @@
 
 #' @author Shade Wilson
 
-library(data.table)
+# library(data.table)
 
 
 #' Basic qstat functionality for monitoring jobs running on the Sun Grid Engine.
@@ -139,6 +139,5 @@ dismod_status <- function(dt, username, model_version_id) {
 ##########
 # qstat_dismod(username = "shadew", model_version_id = 123456)
 # qstat_dismod(username = "shadew")
-
 
 
