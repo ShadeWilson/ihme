@@ -38,7 +38,11 @@
 #' qstat(username = "emumford", full = TRUE, verbose = TRUE)
 #' qstat(username = "shadew", grep = "1.0", verbose = TRUE, state = "r")
 
-qstat <- function(username = user, full = FALSE, grep = "", verbose = FALSE, state = "") {
+qstat <- function(username = NULL, full = FALSE, grep = "", verbose = FALSE, state = "") {
+  if (is.null(username)) {
+    username <- Sys.info()[["user"]]
+  }
+
   command <- ""
   if (full) {
     command <- "export SGE_LONG_JOB_NAMES=-1 && "
@@ -63,8 +67,9 @@ qstat <- function(username = user, full = FALSE, grep = "", verbose = FALSE, sta
   q <- suppressWarnings(tidyr::separate(q, into = paste0("v", 1:10), col = V1, sep = " +"))
   q[, v1 := NULL]
 
-  names(q) <- c("JB_job_number", "JAT_prio", "JB_name", "JB_owner", "state_id", "JB_submission_date", "JB_submission_time", "queue", "slots")
-  q[, node := stringr::str_extract(queue, "c[n2].*\\d")]
+  names(q) <- c("job_id", "JAT_prio", "job_name", "job_owner", "state_id", "job_submission_date",
+                "job_submission_time", "queue", "slots")
+  q[, node := stringr::str_extract(queue, "c[n2l].*\\d")]
 
   data.table::setattr(q, "time", Sys.time())
   return(q[])
@@ -89,12 +94,12 @@ qstat <- function(username = user, full = FALSE, grep = "", verbose = FALSE, sta
 #'
 qstat_dismod <- function(username = user, model_version_id = NA) {
   q <- qstat(username = user, full = TRUE, grep = "dm_")
-  q[, mvid := stringr::str_extract(JB_name, "\\d{6}")]
+  q[, mvid := stringr::str_extract(job_name, "\\d{6}")]
 
   if (!is.na(model_version_id)) {
     return(dismod_status(dt = q, username = username, model_version_id = model_version_id))
   } else {
-    q <- q[, .(jobs = .N), by = c("mvid", "JB_owner")]
+    q <- q[, .(jobs = .N), by = c("mvid", "job_owner")]
 
     return(q[])
   }
@@ -110,7 +115,7 @@ dismod_status <- function(dt, username, model_version_id) {
   loc_data <- data.table::fread(paste0(h_root, "ihme_r_pkg_files/location_metadata.csv"))
 
   dt <- data.table::copy(dt)
-  dt[, job_name_detail := gsub("^(dm_\\d{6})_", "", JB_name)]
+  dt[, job_name_detail := gsub("^(dm_\\d{6})_", "", job_name)]
   dt[, location_id     := gsub("_[mf]_\\d+_.*$", "", job_name_detail)]
 
   dm <- dt[mvid == model_version_id]
@@ -139,5 +144,48 @@ dismod_status <- function(dt, username, model_version_id) {
 ##########
 # qstat_dismod(username = "shadew", model_version_id = 123456)
 # qstat_dismod(username = "shadew")
+
+basic_qdel <- function(job_id) {
+  system(paste("qdel", job_id))
+}
+
+#' Delete SGE jobs using qdel
+#'
+#' @description Flexible job deletion using different patterning including job name, job id,
+#'              job state, etc.
+#'
+qdel <- function(job_id = NA, full = FALSE, grep = "", state = "", state_id = NA, node = NA, all = FALSE) {
+  if (is.na(job_id) && full == FALSE && grep == "" && state == "" &&
+      is.na(state_id) && is.na(node) && all == FALSE) {
+    stop(paste0("Must pass in at least one argument. If you wish to ",
+                "delete all your jobs running, set 'all' to 'TRUE'."))
+  }
+
+  # if passed in vector of job_ids, delete them all
+  if (!all(is.na(job_id))) {
+    invisible(mapply(basic_qdel, job_id))
+  } else {
+
+    # grab qstat for USER given the arguments passed in
+    q <- qstat(full = full, grep = grep, state = state)
+
+    # subset jobs to r, qw, hqw, etc
+    if (!all(is.na(state_id))) {
+      state_ident <- state_id
+      q <- q[state_id %in% state_ident]
+    }
+
+    # subset jobs to just the node passed (if given one)
+    if (!all(is.na(node))) {
+      node_name <- node
+      q <- q[node %in% node_name]
+    }
+
+    if (nrow(q) == 0) {
+      warning("No jobs met the filter criteria. No deletions will occur.")
+    }
+    invisible(mapply(basic_qdel, q$job_id))
+  }
+}
 
 
