@@ -145,6 +145,7 @@ update_package_all(packages, folder)
 
 Version | Updates
 --- | ---
+**0.6.0.0** | Add flexible SGE job deletion with `qdel()`. Update `source_functions()` for GBD 2019 shared function names. Minor bug fix for `qstat()`.
 **0.5.1.1** | Add data.table to imports to fix issues qith `qstat()`
 **0.5.1.0** | Minor bug fixes
 **0.5.0.0** | Add in several new functions: `read_args()` for easier parsing trailing arguments when launching a script, and two function built aroud qstating.
