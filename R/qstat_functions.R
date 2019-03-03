@@ -145,16 +145,49 @@ dismod_status <- function(dt, username, model_version_id) {
 # qstat_dismod(username = "shadew", model_version_id = 123456)
 # qstat_dismod(username = "shadew")
 
-basic_qdel <- function(job_id) {
-  system(paste("qdel", job_id))
+
+
+basic_qdel <- function(job_id, force) {
+  force_flag <- if (force) {
+    "-f "
+  } else {
+    ""
+  }
+
+  system(paste0("qdel ", force_flag, job_id))
 }
 
 #' Delete SGE jobs using qdel
 #'
 #' @description Flexible job deletion using different patterning including job name, job id,
 #'              job state, etc.
+#' @references http://gridscheduler.sourceforge.net/htmlman/htmlman1/qdel.html
 #'
-qdel <- function(job_id = NA, full = FALSE, grep = "", state = "", state_id = NA, node = NA, all = FALSE) {
+#' @param job_id the job_id(s) to delete. If this is specified, all other arguments are
+#' overridden. If not specified, all other arguments to subset current jobs are taken into account
+#' @param full TRUE for full job names, FALSE otherwise. Affects what is found with grep when the
+#' job names are long
+#' @param grep a regular expression string to search for in the qstat output
+#' @param state string, grab only jobs in the given state. Most common are "r" (running) and
+#' "p" (pending). All options are {p|r|s|z|S|N|P|hu|ho|hs|hd|hj|ha|h|a}. Any combination
+#' of states is possible. See qstat manula page for more details.
+#' @param state_id the specific state(s) seen when qstat is run, ie 'r', 'qw', 'hqw'. Can pass in multiple
+#' @param node string name of the node(s) to delete jobs from. Can pass in multiple.
+#' @param force Adds the force flag, '-f' to the qdel command to force deletion if TRUE. Default is FALSE
+#' @param all if no job_ids are passed in and no arguments to subset qstat dataframe are given, all user
+#' jobs will be deleted if set to TRUE. Use with caution. Default is false.
+#' @return Nothing. Prints out system output for qdel command.
+#' @export
+#' @examples
+#' qdel() # warning for no arguments passed in
+#' qdel(all = TRUE) # deletes all running jobs
+#' qdel(grep = "sti")
+#' qdel(grep = "sti", node = c("cn555", "cn333")) # deletes all jobs matching 'sti' on either node cn555 or cn333
+#' qdel(state = "p") # deletes all pending jobs
+#' qdel(state_id = c("qw", "r")) # deletes all jobs in 'qw' OR 'r'
+#'
+qdel <- function(job_id = NA, full = FALSE, grep = "", state = "", state_id = NA,
+                 node = NA, force = FALSE, all = FALSE) {
   if (is.na(job_id) && full == FALSE && grep == "" && state == "" &&
       is.na(state_id) && is.na(node) && all == FALSE) {
     stop(paste0("Must pass in at least one argument. If you wish to ",
@@ -163,7 +196,7 @@ qdel <- function(job_id = NA, full = FALSE, grep = "", state = "", state_id = NA
 
   # if passed in vector of job_ids, delete them all
   if (!all(is.na(job_id))) {
-    invisible(mapply(basic_qdel, job_id))
+    invisible(mapply(basic_qdel, job_id, force = force))
   } else {
 
     # grab qstat for USER given the arguments passed in
@@ -184,7 +217,7 @@ qdel <- function(job_id = NA, full = FALSE, grep = "", state = "", state_id = NA
     if (nrow(q) == 0) {
       warning("No jobs met the filter criteria. No deletions will occur.")
     }
-    invisible(mapply(basic_qdel, q$job_id))
+    invisible(mapply(basic_qdel, q$job_id, force = force))
   }
 }
 
