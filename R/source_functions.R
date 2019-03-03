@@ -8,13 +8,13 @@
 #' @param get_cause_metadata returns cause hierarchy information. By default it will provide the current best version of whatever cause set is specified. The full list of valid cause sets are in shared.cause_set
 #' @param get_covariate_estimates retrieve covariate esitmates in database. By default it returns all demographics, but you can optionally specify a subset. Also by default it retrives the best covariate model from the current GBD round, you can alternatively specify
 #' @param get_demographics Given a gbd team (cod/epi/epi_ar/cov/mort) and a gbd round, return an dictionary with proper demographic ids.
-#' @param get_epi_data read epi data directly into memory, allowing users to bypass the download button in the epiupload webpage. Only active data for a single bundle_id can be retrieved.
+#' @param get_bundle_data read epi data directly into memory, allowing users to bypass the download button in the epiupload webpage. Only active data for a single bundle_id can be retrieved.
 #' @param get_ids A simple table lookup function used to return a dataframe of entity (example: ‘cause’, ‘rei’) ids and names
 #' @param get_location_metadata Return a location hierarchy for a given location set id, or version id
 #' @param get_rei_metadata Returns rei hiearchy with additional metadata. Given a rei set id, return a rei hierarchy. By default, returns the current best version for gbd 2017.
 #' @param get_restrictions Return restrictions for sex, measure, or age for given combinations of causes and those dimensions
 #' @param model_custom deprecated function
-#' @param upload_epi_data Process upload request for a given file. Works for bundles associated with either dismod or stgpr.
+#' @param upload_bundle_data Process upload request for a given file. Works for bundles associated with either dismod or stgpr.
 #' @param validate_input_sheet run validations on a file independent of running a full upload
 #' @param get_cod_data Returns a dataframe of cod data for a given cause, a given cause set version and a given location set version
 #' @param get_envelope Returns a dataframe of all-cause envelope for a set of given ages locations, years, and sexes, and given envelope specifications corresponding to “best” status. If -1 is an input, runs on all possible values of that argument. Accepts -1 for ages, locations, sexes, and years
@@ -47,13 +47,13 @@ source_functions <- function(create_connection_string = FALSE,   # WAVE 1
                              get_cause_metadata = FALSE,
                              get_covariate_estimates = TRUE,
                              get_demographics = FALSE,
-                             get_epi_data = FALSE,
+                             get_bundle_data = FALSE,
                              get_ids = FALSE,
                              get_location_metadata = FALSE,
                              get_rei_metadata = FALSE,
                              get_restrictions = FALSE,
                              model_custom = FALSE,
-                             upload_epi_data = FALSE,
+                             upload_bundle_data = FALSE,
                              validate_input_sheet = FALSE,
                              get_cod_data = FALSE,               # WAVE 2
                              get_envelope = FALSE,
