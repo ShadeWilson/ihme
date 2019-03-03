@@ -7,6 +7,9 @@ if the argument passed in is indeed an object name}
 \usage{
 conditional_deparse(a)
 }
+\value{
+string; deparsed name if was an object, returns original string otherwise
+}
 \description{
 Helper function: deparse object names conditionally, only
 if the argument passed in is indeed an object name

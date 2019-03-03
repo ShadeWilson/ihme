@@ -7,9 +7,9 @@
 source_functions(create_connection_string = FALSE,
   get_best_model_versions = FALSE, get_cause_metadata = FALSE,
   get_covariate_estimates = TRUE, get_demographics = FALSE,
-  get_epi_data = FALSE, get_ids = FALSE, get_location_metadata = FALSE,
+  get_bundle_data = FALSE, get_ids = FALSE, get_location_metadata = FALSE,
   get_rei_metadata = FALSE, get_restrictions = FALSE,
-  model_custom = FALSE, upload_epi_data = FALSE,
+  model_custom = FALSE, upload_bundle_data = FALSE,
   validate_input_sheet = FALSE, get_cod_data = FALSE,
   get_envelope = FALSE, get_envelope_with_shock = FALSE,
   get_life_table = FALSE, get_life_table_with_shock = FALSE,
@@ -31,7 +31,7 @@ source_functions(create_connection_string = FALSE,
 
 \item{get_demographics}{Given a gbd team (cod/epi/epi_ar/cov/mort) and a gbd round, return an dictionary with proper demographic ids.}
 
-\item{get_epi_data}{read epi data directly into memory, allowing users to bypass the download button in the epiupload webpage. Only active data for a single bundle_id can be retrieved.}
+\item{get_bundle_data}{read epi data directly into memory, allowing users to bypass the download button in the epiupload webpage. Only active data for a single bundle_id can be retrieved.}
 
 \item{get_ids}{A simple table lookup function used to return a dataframe of entity (example: ‘cause’, ‘rei’) ids and names}
 
@@ -43,7 +43,7 @@ source_functions(create_connection_string = FALSE,
 
 \item{model_custom}{deprecated function}
 
-\item{upload_epi_data}{Process upload request for a given file. Works for bundles associated with either dismod or stgpr.}
+\item{upload_bundle_data}{Process upload request for a given file. Works for bundles associated with either dismod or stgpr.}
 
 \item{validate_input_sheet}{run validations on a file independent of running a full upload}
 

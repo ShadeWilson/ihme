@@ -38,7 +38,7 @@ read_args <- function(...) {
 #' Helper function: deparse object names conditionally, only
 #' if the argument passed in is indeed an object name
 #'
-#' @returns string; deparsed name if was an object, returns original string otherwise
+#' @return string; deparsed name if was an object, returns original string otherwise
 conditional_deparse <- function(a) {
   name <- if(is.name(a)) {
     deparse(a)
