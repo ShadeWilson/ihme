@@ -5,11 +5,6 @@
 # (will need to be on the cluster to use, obvi)
 
 
-#' @author Shade Wilson
-
-# library(data.table)
-
-
 #' Basic qstat functionality for monitoring jobs running on the Sun Grid Engine.
 #'
 #' @description qstat shows the current status of  the  available  Sun  Grid
@@ -37,7 +32,6 @@
 #' qstat(grep = "sti")
 #' qstat(username = "emumford", full = TRUE, verbose = TRUE)
 #' qstat(username = "shadew", grep = "1.0", verbose = TRUE, state = "r")
-
 qstat <- function(username = NULL, full = FALSE, grep = "", verbose = FALSE, state = "") {
   if (is.null(username)) {
     username <- Sys.info()[["user"]]
