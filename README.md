@@ -28,7 +28,7 @@ ihme::setup() # (or any other function in the package)
 library("ihme", lib.loc = "~/packages") # lib.loc is wherever you have the package saved
 ```
 
-**Functions currently available:** `setup()`, `source_functions()`, `git_clone()`, `read_args()`, `qstat()`, `qstat_dismod()`, `package_version_cran()`, `package_version_github()`, `check_package()`, `check_package_all()`, `check_package_all()`, `update_package()`, `update_package_all()`
+**Functions currently available:** `setup()`, `source_functions()`, `git_clone()`, `read_args()`, `qstat()`, `qstat_dismod()`, `qdel()`, `package_version_cran()`, `package_version_github()`, `check_package()`, `check_package_all()`, `check_package_all()`, `update_package()`, `update_package_all()`
 
 **Functions under development:** None currently. [Suggest one here](https://github.com/ShadeWilson/ihme/issues)!
 
@@ -79,6 +79,29 @@ qstat(username = "shadew", grep = "1.0", verbose = TRUE, state = "r") # qstat fo
 qstat_dismod() # returns a summary table of number of jobs running for each model for user
 qstat_dismod(username = "shadew", model_version_id = 123456) # for "shadew" and given model, returns in-depth job summary table
 ```
+
+`qdel()`: Flexible SGE job deletion using different patterning including job name, job id, job state, node, etc.
+
+```r
+# warning for no arguments passed in. Invalid call
+qdel()
+
+# deletes all running jobs. Use with caution!
+qdel(all = TRUE)
+
+# Pattern match with "sti". Note this uses bash's grep and does not support more advanced regex
+qdel(grep = "sti")
+
+# deletes all jobs matching 'sti' on either node cn555 or cn333
+qdel(grep = "sti", node = c("cn555", "cn333"))
+
+# deletes all pending jobs
+qdel(state = "p")
+
+# deletes all jobs in 'qw' OR 'r'
+qdel(state_id = c("qw", "r"))
+```
+
 
 `read_args()`: Concise method to read in all arguments passed to an R script via the command line.
 
